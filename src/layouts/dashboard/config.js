@@ -18,26 +18,26 @@ export const items = [
       </SvgIcon>
     )
   },
+  {
+    title: 'Reparaciones',
+    path: '/customers',
+    icon: (
+      <SvgIcon fontSize="small">
+        <UsersIcon />
+      </SvgIcon>
+    )
+  },
   // {
-  //   title: 'Customers',
-  //   path: '/customers',
-  //   icon: (
-  //     <SvgIcon fontSize="small">
-  //       <UsersIcon />
-  //     </SvgIcon>
-  //   )
-  // },
-  // {
-  //   title: 'Companies',
+  //   title: 'Proformas',
   //   path: '/companies',
   //   icon: (
   //     <SvgIcon fontSize="small">
-  //       <ShoppingBagIcon />
+  //       <LockClosedIcon />
   //     </SvgIcon>
   //   )
   // },
   {
-    title: 'Reparaciones',
+    title: 'Ordenes de Trabajo',
     path: '/account',
     icon: (
       <SvgIcon fontSize="small">
@@ -45,15 +45,15 @@ export const items = [
       </SvgIcon>
     )
   },
-  // {
-  //   title: 'Settings',
-  //   path: '/settings',
-  //   icon: (
-  //     <SvgIcon fontSize="small">
-  //       <CogIcon />
-  //     </SvgIcon>
-  //   )
-  // },
+  {
+    title: 'Proformas',
+    path: '/settings',
+    icon: (
+      <SvgIcon fontSize="small">
+        <CogIcon />
+      </SvgIcon>
+    )
+  },
   // {
   //   title: 'Login',
   //   path: '/auth/login',

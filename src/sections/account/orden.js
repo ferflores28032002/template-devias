@@ -1,12 +1,10 @@
-import { Box, Container, Stack } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import { subDays, subHours } from "date-fns";
-import Head from "next/head";
 import { useCallback, useMemo, useState } from "react";
 import { useSelection } from "src/hooks/use-selection";
-import { Layout as DashboardLayout } from "src/layouts/dashboard/layout";
 import { CustomersSearch } from "src/sections/customer/customers-search";
-import { CustomersTable } from "src/sections/customer/customers-table";
 import { applyPagination } from "src/utils/apply-pagination";
+import { DataTable } from "./datatables";
 
 const now = new Date();
 
@@ -23,7 +21,7 @@ const data = [
     createdAt: subDays(subHours(now, 7), 1).getTime(),
     email: "carson.darrin@devias.io",
     name: "Carson Darrin",
-    phone: "304-428-3097",
+    phone: "Toyota Corolla",
   },
   {
     id: "5e887b209c28ac3dd97f6db5",
@@ -37,7 +35,7 @@ const data = [
     createdAt: subDays(subHours(now, 1), 2).getTime(),
     email: "fran.perez@devias.io",
     name: "Fran Perez",
-    phone: "712-351-5711",
+    phone: "Honda Civic",
   },
   {
     id: "5e887b7602bdbc4dbb234b27",
@@ -51,7 +49,7 @@ const data = [
     createdAt: subDays(subHours(now, 4), 2).getTime(),
     email: "jie.yan.song@devias.io",
     name: "Jie Yan Song",
-    phone: "770-635-2682",
+    phone: "Ford Mustang",
   },
   {
     id: "5e86809283e28b96d2d38537",
@@ -65,7 +63,7 @@ const data = [
     createdAt: subDays(subHours(now, 11), 2).getTime(),
     email: "anika.visser@devias.io",
     name: "Anika Visser",
-    phone: "908-691-3242",
+    phone: "Chevrolet Camaro",
   },
   {
     id: "5e86805e2bafd54f66cc95c3",
@@ -79,7 +77,7 @@ const data = [
     createdAt: subDays(subHours(now, 7), 3).getTime(),
     email: "miron.vitold@devias.io",
     name: "Miron Vitold",
-    phone: "972-333-4106",
+    phone: "BMW X5",
   },
   {
     id: "5e887a1fbefd7938eea9c981",
@@ -93,7 +91,7 @@ const data = [
     createdAt: subDays(subHours(now, 5), 4).getTime(),
     email: "penjani.inyene@devias.io",
     name: "Penjani Inyene",
-    phone: "858-602-3409",
+    phone: "Audi Q7",
   },
   {
     id: "5e887d0b3d090c1b8f162003",
@@ -107,7 +105,7 @@ const data = [
     createdAt: subDays(subHours(now, 15), 4).getTime(),
     email: "omar.darobe@devias.io",
     name: "Omar Darobe",
-    phone: "415-907-2647",
+    phone: "Mercedes-Benz GLC",
   },
   {
     id: "5e88792be2d4cfb4bf0971d9",
@@ -121,7 +119,7 @@ const data = [
     createdAt: subDays(subHours(now, 2), 5).getTime(),
     email: "siegbert.gottfried@devias.io",
     name: "Siegbert Gottfried",
-    phone: "702-661-1654",
+    phone: "Nissan Altima",
   },
   {
     id: "5e8877da9a65442b11551975",
@@ -135,7 +133,7 @@ const data = [
     createdAt: subDays(subHours(now, 8), 6).getTime(),
     email: "iulia.albu@devias.io",
     name: "Iulia Albu",
-    phone: "313-812-8947",
+    phone: "Volkswagen Passat",
   },
   {
     id: "5e8680e60cba5019c5ca6fda",
@@ -149,7 +147,7 @@ const data = [
     createdAt: subDays(subHours(now, 1), 9).getTime(),
     email: "nasimiyu.danai@devias.io",
     name: "Nasimiyu Danai",
-    phone: "801-301-7894",
+    phone: "Subaru Outback",
   },
 ];
 
@@ -165,7 +163,7 @@ const useCustomerIds = (customers) => {
   }, [customers]);
 };
 
-const Page = () => {
+export const Orden = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const customers = useCustomers(page, rowsPerPage);
@@ -181,40 +179,23 @@ const Page = () => {
   }, []);
 
   return (
-    <>
-      <Head>
-        <title>Customers | Devias Kit</title>
-      </Head>
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          py: 8,
-        }}
-      >
-        <Container maxWidth="xl">
-          <Stack spacing={3}>
-            <CustomersSearch />
-            <CustomersTable
-              count={data.length}
-              items={customers}
-              onDeselectAll={customersSelection.handleDeselectAll}
-              onDeselectOne={customersSelection.handleDeselectOne}
-              onPageChange={handlePageChange}
-              onRowsPerPageChange={handleRowsPerPageChange}
-              onSelectAll={customersSelection.handleSelectAll}
-              onSelectOne={customersSelection.handleSelectOne}
-              page={page}
-              rowsPerPage={rowsPerPage}
-              selected={customersSelection.selected}
-            />
-          </Stack>
-        </Container>
-      </Box>
-    </>
+    <Box>
+      <Stack spacing={3}>
+        <CustomersSearch />
+        <DataTable
+          count={data.length}
+          items={customers}
+          onDeselectAll={customersSelection.handleDeselectAll}
+          onDeselectOne={customersSelection.handleDeselectOne}
+          onPageChange={handlePageChange}
+          onRowsPerPageChange={handleRowsPerPageChange}
+          onSelectAll={customersSelection.handleSelectAll}
+          onSelectOne={customersSelection.handleSelectOne}
+          page={page}
+          rowsPerPage={rowsPerPage}
+          selected={customersSelection.selected}
+        />
+      </Stack>
+    </Box>
   );
 };
-
-Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
-
-export default Page;

@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Card,
   Checkbox,
   Stack,
@@ -9,14 +10,13 @@ import {
   TableHead,
   TablePagination,
   TableRow,
-  Typography
+  Typography,
 } from "@mui/material";
 import { format } from "date-fns";
 import PropTypes from "prop-types";
 import { Scrollbar } from "src/components/scrollbar";
-import RepairDetailsModal from "./RepairDetailsModal";
 
-export const CustomersTable = (props) => {
+export const DataTable = (props) => {
   const {
     count = 0,
     items = [],
@@ -54,10 +54,10 @@ export const CustomersTable = (props) => {
                     }}
                   />
                 </TableCell>
-                <TableCell>Numero de Orden</TableCell>
-                <TableCell>Nombre del Trabajador</TableCell>
-                <TableCell>Estado de reparación</TableCell>
-                <TableCell>Fecha a entregar</TableCell>
+                <TableCell>Cliente</TableCell>
+                <TableCell>Marca de motor</TableCell>
+                <TableCell>Numero de motor</TableCell>
+                <TableCell>Fecha de Creacion</TableCell>
                 <TableCell>Opciones</TableCell>
               </TableRow>
             </TableHead>
@@ -82,17 +82,17 @@ export const CustomersTable = (props) => {
                     </TableCell>
                     <TableCell>
                       <Stack alignItems="center" direction="row" spacing={2}>
-                        {/* <Avatar src={customer.avatar}>
-                          {getInitials(customer.name)}
-                        </Avatar> */}
-                        <Typography variant="subtitle2">{customer.phone}</Typography>
+                        <Typography variant="subtitle2">{customer.name}</Typography>
                       </Stack>
                     </TableCell>
-                    <TableCell>{customer.name}</TableCell>
-                    <TableCell>Pendiente</TableCell>
+                    <TableCell>{customer.phone}</TableCell>
+                    <TableCell>{customer.id}</TableCell>
                     <TableCell>{createdAt}</TableCell>
                     <TableCell>
-                      <RepairDetailsModal />
+                      <Box display="flex" gap="6px">
+                        <Button variant="contained">Editar</Button>
+                        <Button variant="contained" sx={{ background: "#e74038" }}>Eliminar</Button>
+                      </Box>
                     </TableCell>
                   </TableRow>
                 );
@@ -114,7 +114,7 @@ export const CustomersTable = (props) => {
   );
 };
 
-CustomersTable.propTypes = {
+DataTable.propTypes = {
   count: PropTypes.number,
   items: PropTypes.array,
   onDeselectAll: PropTypes.func,

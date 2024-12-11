@@ -10,7 +10,7 @@ const Page = () => {
   const [showProfile, setShowProfile] = useState(false);
 
   const handleAddOrderClick = () => {
-    setShowProfile(!showProfile); // Cambiar entre mostrar el perfil y la orden
+    setShowProfile(!showProfile); 
   };
 
   return (

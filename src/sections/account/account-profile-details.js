@@ -14,29 +14,34 @@ import {
   FormControlLabel,
   Checkbox,
   Typography,
+  Snackbar,
+  Alert,
 } from "@mui/material";
+import { useState } from "react";
+import { createOrdenTrabajo } from "src/services/ordenes/getOrdenesTrabajo";
 
 export const AccountProfileDetails = () => {
   const { control, handleSubmit } = useForm({
     
     defaultValues: {
       cliente: "Fernando Jose", // Referencia al cliente
-      marcaDelMotor: "Susuki", // Marca del motor que se está trabajando
-      numeroDeMotor: "12345", // Número de identificación del motor
-      biela: "Revisión de la biela", // Observaciones sobre la biela
+      marcaMotor: "Susuki", // Marca del motor que se está trabajando
+      numeroMotor: "12345", // Número de identificación del motor
+      revisionBiela: "Revisión de la revisionBiela", // Observaciones sobre la revisionBiela
       bancada: "Estado de la bancada", // Detalles de la bancada
-      hacerAxiales: "Medir tolerancias axiales", // Descripción del trabajo axial
+      rellenarAxial: "Medir tolerancias axiales", // Descripción del trabajo axial
       hacerChamber: "Revisión del chamber", // Trabajo relacionado con el chamber
       hacerGuias: "Cambio de guías", // Trabajo específico de guías
       notas: "Notas adicionales sobre la orden de trabajo", // Información general adicional
       pistaTrasera: true, // Pista trasera está seleccionada por defecto
       pistaDelantera: true, // Pista delantera está seleccionada por defecto
-      cambioDePinones: true, // Cambio de piñones seleccionado
+      cambioPiniones: true, // Cambio de piñones seleccionado
       encamisado: true, // Encamisado seleccionado por defecto
       rectificado: true, // Rectificado seleccionado por defecto
       pulido: false, // Pulido no seleccionado por defecto
       cambioBujeDeLeva: false, // Cambio de buje no seleccionado por defecto
-      reconstruirCojineteBancada: false, // Reconstrucción no seleccionada por defecto
+      reconstruirCojinetebancada: false, // Reconstrucción no seleccionada por defecto
+      reconstruirPuntaCigueñal: false, // Reconstrucción no seleccionada por defecto
       cambiarBujes: false, // Cambio de bujes no seleccionado
       hacerBushines: true, // Trabajo de bushines seleccionado por defecto
       cambioGuia: true, // Cambio de guía seleccionado por defecto
@@ -49,8 +54,16 @@ export const AccountProfileDetails = () => {
     },
   });
 
-  const onSubmit = (data) => {
-    alert(JSON.stringify(data, null, 2));
+  const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
+
+  const onSubmit = async (data) => {
+    try {
+      await createOrdenTrabajo(data);
+      setSnackbar({ open: true, message: "Orden de trabajo creada exitosamente.", severity: "success" });
+      reset();
+    } catch (error) {
+      setSnackbar({ open: true, message: "Error al crear la orden de trabajo.", severity: "error" });
+    }
   };
 
   const fechaActual = new Date();
@@ -58,6 +71,15 @@ export const AccountProfileDetails = () => {
 
   return (
     <form autoComplete="off" noValidate onSubmit={handleSubmit(onSubmit)}>
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+      >
+        <Alert onClose={() => setSnackbar({ ...snackbar, open: false })} severity={snackbar.severity}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
       <Card>
         <CardHeader
           subheader={` ${fechaFormateada.charAt(0).toUpperCase() + fechaFormateada.slice(1)} `}
@@ -85,7 +107,7 @@ export const AccountProfileDetails = () => {
               </Grid>
               <Grid xs={12} md={4}>
                 <Controller
-                  name="marcaDelMotor"
+                  name="marcaMotor"
                   control={control}
                   render={({ field }) => (
                     <TextField
@@ -100,7 +122,7 @@ export const AccountProfileDetails = () => {
               </Grid>
               <Grid xs={12} md={4}>
                 <Controller
-                  name="numeroDeMotor"
+                  name="numeroMotor"
                   control={control}
                   render={({ field }) => (
                     <TextField
@@ -122,10 +144,10 @@ export const AccountProfileDetails = () => {
               </Grid>
               <Grid xs={12} md={4}>
                 <Controller
-                  name="biela"
+                  name="revisionBiela"
                   control={control}
                   render={({ field }) => (
-                    <TextField {...field} fullWidth label="Biela" required />
+                    <TextField {...field} fullWidth label="revisionBiela" required />
                   )}
                 />
               </Grid>
@@ -134,13 +156,13 @@ export const AccountProfileDetails = () => {
                   name="bancada"
                   control={control}
                   render={({ field }) => (
-                    <TextField {...field} fullWidth label="Bancada" required />
+                    <TextField {...field} fullWidth label="bancada" required />
                   )}
                 />
               </Grid>
               <Grid xs={12} md={4}>
                 <Controller
-                  name="hacerAxiales"
+                  name="rellenarAxial"
                   control={control}
                   render={({ field }) => (
                     <TextField {...field} fullWidth label="Hacer axiales" required />
@@ -160,7 +182,8 @@ export const AccountProfileDetails = () => {
                   {[
                     { label: "Pista Trasera", name: "pistaTrasera" },
                     { label: "Pista Delantera", name: "pistaDelantera" },
-                    { label: "Cambio de Piñones", name: "cambioDePinones" },
+                    { label: "Reconstruir punta", name: "reconstruirPuntaCigueñal" },
+                    { label: "Cambio de Piñones", name: "cambioPiniones" },
                   ].map(({ label, name }) => (
                     <Controller
                       key={name}
@@ -195,7 +218,7 @@ export const AccountProfileDetails = () => {
                     { label: "Rectificado", name: "rectificado" },
                     { label: "Pulido", name: "pulido" },
                     { label: "Cambio Buje de leva", name: "cambioBujeDeLeva" },
-                    { label: "Reconstruir cojinete bancada", name: "reconstruirCojineteBancada" },
+                    { label: "Reconstruir cojinete bancada", name: "reconstruirCojinetebancada" },
                   ].map(({ label, name }) => (
                     <Controller
                       key={name}
@@ -273,6 +296,7 @@ export const AccountProfileDetails = () => {
             </Grid>
           </Box>
         </CardContent>
+
         <Divider />
         <CardActions sx={{ justifyContent: "flex-end" }}>
           <Button type="submit" variant="contained">

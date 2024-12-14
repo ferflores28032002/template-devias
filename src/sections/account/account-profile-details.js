@@ -84,7 +84,7 @@ export const AccountProfileDetails = () => {
   const onSubmit = async (data) => {
     setLoading(true);
     try {
-      const response = await axios.post("http://tallercenteno.somee.com/api/OrdenTrabajo", data);
+      const response = await axios.post("https://tallercenteno.somee.com/api/OrdenTrabajo", data);
       console.log("Response:", response.data);
       setLoading(false);
       await MySwal.fire({

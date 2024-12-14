@@ -1,22 +1,24 @@
+import { useTheme } from "@emotion/react";
+import PlusIcon from "@heroicons/react/24/solid/PlusIcon";
 import {
-  Card,
-  CardContent,
-  CardActions,
-  Typography,
-  Button,
-  Grid,
-  Modal,
   Box,
+  Button,
   Divider,
+  Modal,
+  Stack,
+  SvgIcon,
   Table,
   TableBody,
   TableCell,
-  TableRow,
   TableHead,
+  TableRow,
   TextField,
-  Stack,
+  Typography,
+  useMediaQuery
 } from "@mui/material";
 import { useState } from "react";
+import { CustomersSearch } from "../customer/customers-search";
+import { ProformasTable } from "./proformas-table";
 
 const initialPrices = {
   encamisarBlock: "",
@@ -24,12 +26,6 @@ const initialPrices = {
   cambiarBushings: "",
   rectificarCigueñal: "",
 };
-
-const proformas = [
-  { id: 9545, cliente: "Kevin", fecha: "2024-11-30", pendiente: true },
-  { id: 9546, cliente: "Maria", fecha: "2024-12-01", pendiente: false },
-  { id: 9547, cliente: "Luis", fecha: "2024-12-02", pendiente: true },
-];
 
 export const ProformaGrid = () => {
   const [selectedProforma, setSelectedProforma] = useState(null);
@@ -72,52 +68,34 @@ export const ProformaGrid = () => {
     setIsAdding(false);
   };
 
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm")); // Detecta si es mobile
+  
+
   return (
-    <Box sx={{ p: 4 }}>
-      <Box textAlign="right" mb={3}>
-        <Button variant="contained" onClick={handleOpenAddModal}>
-          Agregar Proforma
-        </Button>
+    <Box>
+      <Box display="flex" justifyContent="space-between" alignItems="center">
+        <CustomersSearch>
+          <Button
+          startIcon={
+            !isMobile && ( // Muestra el ícono solo si no es mobile
+              <SvgIcon fontSize="small">
+                { <PlusIcon /> }
+              </SvgIcon>
+            )
+          }
+            variant="contained"
+            onClick={handleOpenAddModal}
+            sx={{
+              width: { xs: "250px", sm: "auto" }, // 200px en mobile, auto en pantallas más grandes
+            }}
+          >
+            Crear proforma
+          </Button>
+        </CustomersSearch>
       </Box>
-      <Grid container spacing={4}>
-        {proformas.map((proforma) => (
-          <Grid item xs={12} sm={6} md={4} key={proforma.id}>
-            <Card
-              sx={{
-                borderRadius: 3,
-                boxShadow: 3,
-                overflow: "hidden",
-                "&:hover": { boxShadow: 6, transform: "scale(1.02)" },
-                transition: "all 0.3s",
-              }}
-            >
-              <CardContent>
-                <Typography variant="h6" fontWeight="bold">
-                  Proforma #{proforma.id}
-                </Typography>
-                <Typography variant="body1">
-                  <strong>Cliente:</strong> {proforma.cliente}
-                </Typography>
-                <Typography variant="body2" color="textSecondary">
-                  <strong>Fecha:</strong> {proforma.fecha}
-                </Typography>
-                <Typography variant="body2" color={proforma.pendiente ? "error" : "success"}>
-                  {proforma.pendiente ? "Pendiente" : "Completada"}
-                </Typography>
-              </CardContent>
-              <CardActions>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={() => handleOpenModal(proforma)}
-                >
-                  Ver Detalles
-                </Button>
-              </CardActions>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
+
+      <ProformasTable handleOpenModal={handleOpenModal} />
 
       {/* Modal */}
       <Modal open={!!selectedProforma || isAdding} onClose={handleCloseModal}>
@@ -127,7 +105,7 @@ export const ProformaGrid = () => {
             top: "50%",
             left: "50%",
             transform: "translate(-50%, -50%)",
-            width: "55%",
+            width: { xs: "98%", sm: "55%" },
             maxHeight: "95vh",
             overflowY: "auto",
             bgcolor: "background.paper",

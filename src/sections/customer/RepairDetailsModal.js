@@ -23,6 +23,7 @@ export default function RepairDetailsModal() {
   return (
     <>
       <Button
+     
         startIcon={
           <SvgIcon fontSize="small">
             <EyeIcon />
@@ -31,7 +32,7 @@ export default function RepairDetailsModal() {
         variant="contained"
         onClick={handleOpen}
       >
-        Ver detalles
+        Ver
       </Button>
       <Modal open={open} onClose={handleClose}>
         <Box sx={modalStyle}>

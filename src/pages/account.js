@@ -19,6 +19,11 @@ import { useTheme } from "@emotion/react";
 
 const Page = () => {
   const [showProfile, setShowProfile] = useState(false);
+  const [searchQuery, setSearchQuery] = useState(""); // Estado para el buscador
+
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value); // Actualiza el estado del buscador
+  };
 
   const handleAddOrderClick = () => {
     setShowProfile(!showProfile);
@@ -39,12 +44,16 @@ const Page = () => {
               <Grid container spacing={3}>
                 <Grid xs={12} md={12} lg={12} marginTop="2rem">
                   <Box display="flex" justifyContent="space-between" alignItems="center">
-                    <CustomersSearch>
+                    
+                    <CustomersSearch
+                      onChange={handleSearchChange} // Pasar el manejador del buscador
+                      value={searchQuery} // Vincular el estado
+                    >
                       <Button
                         startIcon={
                           !isMobile && ( // Muestra el ícono solo si no es mobile
                             <SvgIcon fontSize="small">
-                              {showProfile ? <PlusIcon /> : <EyeIcon />}
+                              {!showProfile ? <PlusIcon /> : <EyeIcon />}
                             </SvgIcon>
                           )
                         }
@@ -54,11 +63,11 @@ const Page = () => {
                           width: { xs: "200px", sm: "auto" }, // 200px en mobile, auto en pantallas más grandes
                         }}
                       >
-                        Crear orden
+                        {!showProfile ? "Nueva Orden" : "Ver ordenes"}
                       </Button>
                     </CustomersSearch>
                   </Box>
-                  {showProfile ? <AccountProfileDetails /> : <Orden />}
+                  {showProfile ? <AccountProfileDetails /> : <Orden searchQuery={searchQuery} />}
                 </Grid>
               </Grid>
             </div>

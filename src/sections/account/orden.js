@@ -2,43 +2,23 @@ import {
   Box,
   Button,
   Card,
+  CircularProgress,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TablePagination,
   TableRow,
+  Typography,
 } from "@mui/material";
 import { format } from "date-fns";
 import { useEffect, useState } from "react";
 import { Scrollbar } from "src/components/scrollbar";
 import { getOrdenesTrabajo } from "src/services/ordenes/getOrdenesTrabajo";
 
-const orders = [
-  { marcaMotor: "Honda", numeroMotor: "12345", fechaCreacion: "2024-01-01", cliente: "Juan Pérez" },
-  { marcaMotor: "Toyota", numeroMotor: "67890", fechaCreacion: "2024-01-02", cliente: "María López" },
-  { marcaMotor: "Ford", numeroMotor: "54321", fechaCreacion: "2024-01-03", cliente: "Carlos Martínez" },
-  { marcaMotor: "Chevrolet", numeroMotor: "98765", fechaCreacion: "2024-01-04", cliente: "Ana Gómez" },
-  { marcaMotor: "Nissan", numeroMotor: "11223", fechaCreacion: "2024-01-05", cliente: "Luis Rodríguez" },
-  { marcaMotor: "Mazda", numeroMotor: "33445", fechaCreacion: "2024-01-06", cliente: "Sofía Hernández" },
-  { marcaMotor: "BMW", numeroMotor: "55667", fechaCreacion: "2024-01-07", cliente: "Miguel Torres" },
-  { marcaMotor: "Mercedes", numeroMotor: "77889", fechaCreacion: "2024-01-08", cliente: "Lucía Sánchez" },
-  { marcaMotor: "Hyundai", numeroMotor: "99000", fechaCreacion: "2024-01-09", cliente: "Jorge Romero" },
-  { marcaMotor: "Kia", numeroMotor: "11122", fechaCreacion: "2024-01-10", cliente: "Elena Ruiz" },
-  { marcaMotor: "Volkswagen", numeroMotor: "23334", fechaCreacion: "2024-01-11", cliente: "Pedro Vega" },
-  { marcaMotor: "Audi", numeroMotor: "45566", fechaCreacion: "2024-01-12", cliente: "Clara Blanco" },
-  { marcaMotor: "Renault", numeroMotor: "67788", fechaCreacion: "2024-01-13", cliente: "Fernando Ortiz" },
-  { marcaMotor: "Peugeot", numeroMotor: "89900", fechaCreacion: "2024-01-14", cliente: "Natalia Cruz" },
-  { marcaMotor: "Subaru", numeroMotor: "12321", fechaCreacion: "2024-01-15", cliente: "Raúl Jiménez" },
-  { marcaMotor: "Tesla", numeroMotor: "34543", fechaCreacion: "2024-01-16", cliente: "Paula Rivas" },
-  { marcaMotor: "Jaguar", numeroMotor: "56765", fechaCreacion: "2024-01-17", cliente: "Andrés Molina" },
-  { marcaMotor: "Land Rover", numeroMotor: "78987", fechaCreacion: "2024-01-18", cliente: "Camila Castillo" },
-  { marcaMotor: "Fiat", numeroMotor: "90123", fechaCreacion: "2024-01-19", cliente: "Tomás Aguirre" },
-  { marcaMotor: "Mitsubishi", numeroMotor: "34567", fechaCreacion: "2024-01-20", cliente: "Isabel Ponce" }
-];
-
-export const Orden = () => {
-  const [ordenes, setOrdenes] = useState(orders);
+export const Orden = ({ searchQuery }) => {
+  const [ordenes, setOrdenes] = useState([]);
+  const [loading, setLoading] = useState(true); // Estado para el indicador de carga
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
@@ -49,6 +29,8 @@ export const Orden = () => {
         setOrdenes(data);
       } catch (error) {
         console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false); // Oculta el indicador de carga
       }
     };
     fetchData();
@@ -72,6 +54,21 @@ export const Orden = () => {
     console.log(`Delete order with ID: ${id}`);
     // Aquí puedes agregar la lógica para eliminar
   };
+  const filteredOrdenes = ordenes
+  .filter((orden) =>
+    orden.cliente.toLowerCase().includes(searchQuery.toLowerCase())
+  )
+  .reverse() ;
+
+
+  if (loading) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" height="300px">
+        <CircularProgress size={30} />
+      </Box>
+    );
+  }
+
   return (
     <Card>
       <Scrollbar>
@@ -87,45 +84,64 @@ export const Orden = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {ordenes.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((orden) => (
-                <TableRow hover key={orden.id}>
-                  <TableCell>{orden.cliente}</TableCell>
-                  <TableCell>{orden.marcaMotor}</TableCell>
-                  <TableCell>{orden.numeroMotor}</TableCell>
-                  <TableCell>{format(new Date(orden.fechaCreacion), "dd/MM/yyyy")}</TableCell>
-                  <TableCell sx={{ display: "flex", gap: `5px` }}>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={() => handleEdit(orden.id)}
-                      sx={{ marginRight: 1 }}
-                    >
-                      Editar
-                    </Button>
-                    <Button
-                      variant="contained"
-                      color="secondary"
-                      onClick={() => handleDelete(orden.id)}
-                      sx={{ marginRight: 1 }}
-                    >
-                      Eliminar
-                    </Button>
+              {filteredOrdenes.length > 0 ? (
+                filteredOrdenes
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((orden) => (
+                    <TableRow hover key={orden.id}>
+                      <TableCell>{orden.cliente}</TableCell>
+                      <TableCell>{orden.marcaMotor}</TableCell>
+                      <TableCell>{orden.numeroMotor}</TableCell>
+                      <TableCell>
+                        {format(new Date(orden.fechaCreacion), "dd/MM/yyyy")}
+                      </TableCell>
+                      <TableCell sx={{ display: "flex", gap: `5px` }}>
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={() => handleEdit(orden.id)}
+                          sx={{ marginRight: 1 }}
+                        >
+                          Editar
+                        </Button>
+                        <Button
+                          variant="contained"
+                          color="secondary"
+                          onClick={() => handleDelete(orden.id)}
+                          sx={{ marginRight: 1 }}
+                        >
+                          Eliminar
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={5} align="center">
+                    <Typography variant="h6" color="textSecondary">
+                      No se encontraron datos
+                    </Typography>
+                    <Typography variant="body2" color="textSecondary">
+                      Intenta ajustar el filtro o agregar nuevas órdenes.
+                    </Typography>
                   </TableCell>
                 </TableRow>
-              ))}
+              )}
             </TableBody>
           </Table>
         </Box>
       </Scrollbar>
-      <TablePagination
-        component="div"
-        count={ordenes.length}
-        onPageChange={handlePageChange}
-        onRowsPerPageChange={handleRowsPerPageChange}
-        page={page}
-        rowsPerPage={rowsPerPage}
-        rowsPerPageOptions={[5, 10, 25]}
-      />
+      {filteredOrdenes.length > 0 && (
+        <TablePagination
+          component="div"
+          count={filteredOrdenes.length}
+          onPageChange={handlePageChange}
+          onRowsPerPageChange={handleRowsPerPageChange}
+          page={page}
+          rowsPerPage={rowsPerPage}
+          rowsPerPageOptions={[5, 10, 25]}
+        />
+      )}
     </Card>
   );
 };

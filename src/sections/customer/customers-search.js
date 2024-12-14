@@ -6,6 +6,7 @@ export const CustomersSearch = ({children}) => (
     <OutlinedInput
       defaultValue=""
       fullWidth
+      
       placeholder="Buscar..."
       startAdornment={(
         <InputAdornment position="start">
@@ -17,7 +18,7 @@ export const CustomersSearch = ({children}) => (
           </SvgIcon>
         </InputAdornment>
       )}
-      sx={{ maxWidth: 500 }}
+      sx={{ maxWidth: 500, height: '40.5px', marginRight: '4px' }}
     />
     {children}
 

@@ -54,14 +54,14 @@ export const AccountProfileDetails = () => {
       revisionBiela: "",
       bancada: "",
       rellenarAxial: false,
-      pistaTrasera: true,
-      pistaDelantera: true,
-      cambioPiniones: true,
+      pistaTrasera: false,
+      pistaDelantera: false,
+      cambioPiniones: false,
       reconstruirPuntaCigueñal: false,
       hacerBushines: false,
       cantidadBielasaReconstruir: 0,
-      encamisado: true,
-      rectificado: true,
+      encamisado: false,
+      rectificado: false,
       pulido: false,
       cambioBujeDeLeva: false,
       reconstruirCojinetebancada: false,
@@ -69,15 +69,26 @@ export const AccountProfileDetails = () => {
       superficieBlockCejas: false,
       medirPertuberanciaPistones: false,
       rectificarBanca: false,
-      cambioGuia: false,
       hechuraDeCasquillo: false,
       rectificarSuperficie: false,
       rellenarPasesDeAgua: false,
-      calibrar: true,
-      instalarChamber: true,
+      calibrar: false,
+      instalarChamber: false,
+      rellenarPasesAgua: false,
       rectificarAsientoDeCulata: false,
       cambiarChamber: false,
       respuesto: "",
+      reconstruirAxial: false,
+      notasCigueñal: "",
+      cambioBujeLeva: false,
+      rectificarAsientoCulata: false,
+      reconstruirCojineteBancada: false,
+      notasBlock: "",
+      hechuraCasquillo: false,
+      notasCulatas: "",
+      numeroLevas: 0,
+      cambiarBujies: false,
+      notasBiela: "",
     },
   });
 
@@ -203,37 +214,34 @@ export const AccountProfileDetails = () => {
                   />
                 </Grid>
               ))}
-              <Grid item xs={12}>
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "space-center",
-                    alignItems: "center",
-                    gap: 5,
-                    flexWrap: "wrap",
-                  }}
-                >
-                  {[
-                    "pistaTrasera",
-                    "pistaDelantera",
-                    "reconstruirPuntaCigueñal",
-                    "cambioPiniones",
-                    "hacerBushines",
-                    "rellenarAxial",
-                  ].map((name) => (
-                    <Controller
-                      key={name}
-                      name={name}
-                      control={control}
-                      render={({ field }) => (
-                        <FormControlLabel
-                          control={<Checkbox {...field} checked={field.value} />}
-                          label={name}
-                        />
-                      )}
+              <Grid item xs={12} md={4}>
+                <Controller
+                  name="reconstruirAxial"
+                  control={control}
+                  render={({ field }) => (
+                    <FormControlLabel
+                      control={<Checkbox {...field} checked={field.value} />}
+                      label="Reconstruir Axial"
                     />
-                  ))}
-                </Box>
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12} md={12}>
+                <Controller
+                  name="notasCigueñal"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      fullWidth
+                      multiline
+                      rows={3}
+                      helperText={errors.notasCigueñal?.message}
+                      error={!!errors.notasCigueñal}
+                      label="Notas Cigueñal"
+                    />
+                  )}
+                />
               </Grid>
 
               {/* Block */}
@@ -253,11 +261,13 @@ export const AccountProfileDetails = () => {
                   "encamisado",
                   "rectificado",
                   "pulido",
+                  "pistaDelantera",
                   "cambioBujeDeLeva",
                   "reconstruirCojinetebancada",
                   "superficieBlock",
                   "superficieBlockCejas",
                   "medirPertuberanciaPistones",
+                  "hacerBushines",
                   "rectificarBanca",
                 ].map((name) => (
                   <Controller
@@ -273,6 +283,23 @@ export const AccountProfileDetails = () => {
                   />
                 ))}
               </Box>
+              <Grid item xs={12} md={12}>
+                <Controller
+                  name="notasBlock"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      fullWidth
+                      multiline
+                      rows={3}
+                      helperText={errors.notasBlock?.message}
+                      error={!!errors.notasBlock}
+                      label="Notas Block"
+                    />
+                  )}
+                />
+              </Grid>
 
               {/* Culata */}
               <Grid item xs={12}>
@@ -288,14 +315,18 @@ export const AccountProfileDetails = () => {
                 }}
               >
                 {[
-                  "cambioGuia",
                   "hechuraDeCasquillo",
+                  "rectificarAsientoCulata",
                   "rectificarSuperficie",
+                  "rellenarPasesAgua",
                   "rellenarPasesDeAgua",
                   "calibrar",
                   "instalarChamber",
                   "rectificarAsientoDeCulata",
                   "cambiarChamber",
+                  "cambioBujeLeva",
+                  "hechuraCasquillo",
+                  "cambiarGuia",
                 ].map((name) => (
                   <Controller
                     key={name}
@@ -310,6 +341,89 @@ export const AccountProfileDetails = () => {
                   />
                 ))}
               </Box>
+              <Grid item xs={12} md={12}>
+                <Controller
+                  name="notasCulatas"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      fullWidth
+                      multiline
+                      rows={3}
+                      helperText={errors.notasCulatas?.message}
+                      error={!!errors.notasCulatas}
+                      label="Notas Culatas"
+                    />
+                  )}
+                />
+              </Grid>
+
+              {/* Sección Final */}
+              <Grid item xs={12}>
+                <Typography variant="h6">Sección Final</Typography>
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <Controller
+                  name="numeroLevas"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      fullWidth
+                      type="number"
+                      helperText={errors.numeroLevas?.message}
+                      error={!!errors.numeroLevas}
+                      label="Número de Levas"
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <Controller
+                  name="cantidadBielasaReconstruir"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      fullWidth
+                      type="number"
+                      helperText={errors.cantidadBielasaReconstruir?.message}
+                      error={!!errors.cantidadBielasaReconstruir}
+                      label="Cantidad de Bielas a Reconstruir"
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <Controller
+                  name="cambiarBujies"
+                  control={control}
+                  render={({ field }) => (
+                    <FormControlLabel
+                      control={<Checkbox {...field} checked={field.value} />}
+                      label="Cambiar Bujies"
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12} md={12}>
+                <Controller
+                  name="notasBiela"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      fullWidth
+                      multiline
+                      rows={3}
+                      helperText={errors.notasBiela?.message}
+                      error={!!errors.notasBiela}
+                      label="Notas Biela"
+                    />
+                  )}
+                />
+              </Grid>
 
               {/* Respuesto */}
               <Grid item xs={12}>

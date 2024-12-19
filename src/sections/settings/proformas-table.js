@@ -1,4 +1,6 @@
-import EyeIcon from "@heroicons/react/24/solid/EyeIcon";
+"use client";
+
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Button,
@@ -10,26 +12,31 @@ import {
   TableHead,
   TablePagination,
   TableRow,
+  Typography,
 } from "@mui/material";
 import { format } from "date-fns";
-import { useEffect, useState } from "react";
-import { Scrollbar } from "src/components/scrollbar";
+import PlusIcon from "@heroicons/react/24/solid/PlusIcon";
+import EyeIcon from "@heroicons/react/24/solid/EyeIcon";
+import axios from "axios";
 
-const proformas = [
-  { id: 1, numero: "9545", cliente: "Kevin", fecha: "2024-11-30", estado: "Pendiente" },
-  { id: 2, numero: "9546", cliente: "Maria", fecha: "2024-12-01", estado: "Completada" },
-  { id: 3, numero: "9547", cliente: "Luis", fecha: "2024-12-02", estado: "Pendiente" },
-  { id: 4, numero: "9548", cliente: "Ana", fecha: "2024-12-03", estado: "Completada" },
-];
-
-export const ProformasTable = ({ handleOpenModal }) => {
-  const [ordenes, setOrdenes] = useState(proformas);
+export const ProformasTable = () => {
+  const [proformas, setProformas] = useState([]); // Estado para guardar las proformas
+  const [selectedProforma, setSelectedProforma] = useState(null);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
+  // Función para obtener las proformas
+  const fetchProformas = async () => {
+    try {
+      const response = await axios.get("https://www.tallercenteno.somee.com/api/Proformas");
+      setProformas(response.data);
+    } catch (error) {
+      console.error("Error al obtener las proformas:", error);
+    }
+  };
+
   useEffect(() => {
-    // Aquí puedes reemplazar esta lógica con una llamada a una API si es necesario
-    setOrdenes(proformas);
+    fetchProformas(); // Llamar a la función cuando el componente se monte
   }, []);
 
   const handlePageChange = (event, newPage) => {
@@ -42,84 +49,68 @@ export const ProformasTable = ({ handleOpenModal }) => {
   };
 
   const handleDetails = (id) => {
-    const proforma = ordenes.find((orden) => orden.id === id);
-    handleOpenModal(proforma);
-  };
-
-  const handleEdit = (id) => {
-    console.log(`Editar la proforma #${id}`);
-  };
-
-  const handleDelete = (id) => {
-    if (window.confirm(`¿Estás seguro de eliminar la proforma #${id}?`)) {
-      setOrdenes((prev) => prev.filter((orden) => orden.id !== id));
-    }
+    const proforma = proformas.find((item) => item.id === id);
+    setSelectedProforma(proforma);
   };
 
   return (
     <Card>
-      <Scrollbar>
-        <Box sx={{ minWidth: 800 }}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Id</TableCell>
-                <TableCell>Proforma</TableCell>
-                <TableCell>Cliente</TableCell>
-                <TableCell>Fecha</TableCell>
-                <TableCell>Estado</TableCell>
-                <TableCell>Acciones</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {ordenes.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((orden) => (
-                <TableRow hover key={orden.id}>
-                  <TableCell>{`#${orden.id}`}</TableCell>
-                  <TableCell>{`#${orden.numero}`}</TableCell>
-                  <TableCell>{orden.cliente}</TableCell>
-                  <TableCell>{format(new Date(orden.fecha), "yyyy-MM-dd")}</TableCell>
+      <Box display="flex" justifyContent="space-between" alignItems="center" p={2}>
+        <Typography variant="h5" fontWeight="bold">
+          Proformas
+        </Typography>
+      </Box>
+      <Box sx={{ minWidth: 800 }}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Id</TableCell>
+              <TableCell>Proforma</TableCell>
+              <TableCell>Cliente</TableCell>
+              <TableCell>Fecha</TableCell>
+              <TableCell>Estado</TableCell>
+              <TableCell>Acciones</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {proformas
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((proforma) => (
+                <TableRow hover key={proforma.id}>
+                  <TableCell>{`#${proforma.id}`}</TableCell>
+                  <TableCell>{proforma.numeroProforma}</TableCell>
+                  <TableCell>{proforma.cliente}</TableCell>
+                  <TableCell>{format(new Date(proforma.fechaEmision), "yyyy-MM-dd")}</TableCell>
                   <TableCell
                     sx={{
-                      color: orden.estado === "Pendiente" ? "error.main" : "success.main",
+                      color: proforma.estado === "Pendiente" ? "error.main" : "success.main",
                     }}
                   >
-                    {orden.estado}
+                    {proforma.estado}
                   </TableCell>
                   <TableCell>
                     <Button
                       variant="contained"
                       color="primary"
-                      onClick={() => handleDetails(orden.id)}
+                      onClick={() => handleDetails(proforma.id)}
+                      startIcon={
+                        <SvgIcon fontSize="small">
+                          <EyeIcon />
+                        </SvgIcon>
+                      }
                       sx={{ marginRight: 1 }}
-                      startIcon={<SvgIcon fontSize="small">{<EyeIcon />}</SvgIcon>}
                     >
                       Ver
-                    </Button>
-                    <Button
-                      variant="contained"
-                      color="warning"
-                      onClick={() => handleEdit(orden.id)}
-                      sx={{ marginRight: 1 }}
-                    >
-                      Editar
-                    </Button>
-                    <Button
-                      variant="contained"
-                      color="error"
-                      onClick={() => handleDelete(orden.id)}
-                    >
-                      Eliminar
                     </Button>
                   </TableCell>
                 </TableRow>
               ))}
-            </TableBody>
-          </Table>
-        </Box>
-      </Scrollbar>
+          </TableBody>
+        </Table>
+      </Box>
       <TablePagination
         component="div"
-        count={ordenes.length}
+        count={proformas.length}
         onPageChange={handlePageChange}
         onRowsPerPageChange={handleRowsPerPageChange}
         page={page}

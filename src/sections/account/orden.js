@@ -15,12 +15,19 @@ import { format } from "date-fns";
 import { useEffect, useState } from "react";
 import { Scrollbar } from "src/components/scrollbar";
 import { getOrdenesTrabajo } from "src/services/ordenes/getOrdenesTrabajo";
+import axios from "axios";
+import ProformaModal from "./ProformaModal";
 
 export const Orden = ({ searchQuery }) => {
   const [ordenes, setOrdenes] = useState([]);
-  const [loading, setLoading] = useState(true); // Estado para el indicador de carga
+  const [loading, setLoading] = useState(true);
+  const [buttonLoading, setButtonLoading] = useState(null);
+  const [open, setOpen] = useState(false);
+  const [selectedData, setSelectedData] = useState(null);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  const [selectedId, setSelectedId] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -30,7 +37,7 @@ export const Orden = ({ searchQuery }) => {
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
-        setLoading(false); // Oculta el indicador de carga
+        setLoading(false);
       }
     };
     fetchData();
@@ -45,21 +52,24 @@ export const Orden = ({ searchQuery }) => {
     setPage(0);
   };
 
-  const handleEdit = (id) => {
-    console.log(`Edit order with ID: ${id}`);
-    // Aquí puedes agregar la lógica para editar
+  const handleCreateProforma = async (id) => {
+    try {
+      setButtonLoading(id);
+      const response = await axios.get(
+        `https://www.tallercenteno.somee.com/api/OrdenTrabajo/${id}`
+      );
+      setSelectedData(response.data);
+      setOpen(true);
+    } catch (error) {
+      console.error("Error fetching order data:", error);
+    } finally {
+      setButtonLoading(null);
+    }
   };
 
-  const handleDelete = (id) => {
-    console.log(`Delete order with ID: ${id}`);
-    // Aquí puedes agregar la lógica para eliminar
-  };
   const filteredOrdenes = ordenes
-  .filter((orden) =>
-    orden.cliente.toLowerCase().includes(searchQuery.toLowerCase())
-  )
-  .reverse() ;
-
+    .filter((orden) => orden.cliente.toLowerCase().includes(searchQuery.toLowerCase()))
+    .reverse();
 
   if (loading) {
     return (
@@ -71,6 +81,14 @@ export const Orden = ({ searchQuery }) => {
 
   return (
     <Card>
+      {selectedData && (
+        <ProformaModal
+          open={open}
+          handleClose={() => setOpen(false)}
+          data={selectedData}
+          id={selectedId}
+        />
+      )}
       <Scrollbar>
         <Box sx={{ minWidth: 800 }}>
           <Table>
@@ -92,25 +110,20 @@ export const Orden = ({ searchQuery }) => {
                       <TableCell>{orden.cliente}</TableCell>
                       <TableCell>{orden.marcaMotor}</TableCell>
                       <TableCell>{orden.numeroMotor}</TableCell>
-                      <TableCell>
-                        {format(new Date(orden.fechaCreacion), "dd/MM/yyyy")}
-                      </TableCell>
+                      <TableCell>{format(new Date(orden.fechaCreacion), "dd/MM/yyyy")}</TableCell>
                       <TableCell sx={{ display: "flex", gap: `5px` }}>
                         <Button
                           variant="contained"
                           color="primary"
-                          onClick={() => handleEdit(orden.id)}
-                          sx={{ marginRight: 1 }}
+                          onClick={() => {
+                            setSelectedId(orden.id);
+                            handleCreateProforma(orden.id);
+                          }}
+                          disabled={buttonLoading === orden.id}
+                          isLoading={buttonLoading === orden.id}
+                          sx={{ marginRight: 1, position: "relative" }}
                         >
-                          Editar
-                        </Button>
-                        <Button
-                          variant="contained"
-                          color="secondary"
-                          onClick={() => handleDelete(orden.id)}
-                          sx={{ marginRight: 1 }}
-                        >
-                          Eliminar
+                          Crear proforma
                         </Button>
                       </TableCell>
                     </TableRow>

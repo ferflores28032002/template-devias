@@ -11,7 +11,7 @@ import {
   TableRow,
 } from "@mui/material";
 
-import { Build, Description, PictureAsPdf, Print, Visibility } from "@mui/icons-material"; // Material Icons
+import { Build, Description, Edit, PictureAsPdf, Print, Visibility } from "@mui/icons-material"; // Material Icons
 import axios from "axios";
 import { format } from "date-fns";
 import jsPDF from "jspdf";
@@ -21,6 +21,7 @@ import { Scrollbar } from "src/components/scrollbar";
 import ProformaModal from "./ProformaModal";
 import CreateRepairModal from "./CreateRepairModal";
 import OrderDetailsModal from "./OrderDetailsModal";
+import EditOrden from "./EditOrden";
 
 export const Orden = ({ searchQuery }) => {
   const [ordenes, setOrdenes] = useState([]);
@@ -34,6 +35,7 @@ export const Orden = ({ searchQuery }) => {
 
   const [createRepair, setCreateRepair] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
+  const [edit, setEdit] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -47,7 +49,7 @@ export const Orden = ({ searchQuery }) => {
       }
     };
     fetchData();
-  }, []);
+  }, [edit]);
 
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
@@ -263,126 +265,143 @@ export const Orden = ({ searchQuery }) => {
   };
 
   return (
-    <Card>
-      {selectedData && (
-        <ProformaModal
-          open={open}
-          handleClose={() => setOpen(false)}
-          data={selectedData}
-          id={selectedId}
-        />
-      )}
-      <OrderDetailsModal
-        orderId={selectedId}
-        open={modalOpenOrder}
-        onClose={() => setModalOpenOrder(false)}
-      />
-      <CreateRepairModal
-        ordenDeTrabajoId={selectedId}
-        open={createRepair}
-        onClose={() => setCreateRepair(false)}
-        onSave={handleSave}
-      />
-      <Scrollbar>
-        <Box sx={{ minWidth: 800 }}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Cliente</TableCell>
-                <TableCell>Marca de Motor</TableCell>
-                <TableCell>Número de Motor</TableCell>
-                <TableCell>Fecha de Registro</TableCell>
-                <TableCell>Acciones</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {filteredOrdenes
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((orden) => (
-                  <TableRow hover key={orden.id}>
-                    <TableCell>{orden.cliente}</TableCell>
-                    <TableCell>{orden.marcaMotor}</TableCell>
-                    <TableCell>{orden.numeroMotor}</TableCell>
-                    <TableCell>
-                      {orden.fechaCreacion
-                        ? format(new Date(orden.fechaCreacion), "dd/MM/yyyy")
-                        : "No disponible"}
-                    </TableCell>
-                    <TableCell sx={{ display: "flex", gap: `5px` }}>
-                      {/* Botón Imprimir */}
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => handlePrint(orden.id)}
-                        sx={{ marginRight: 1 }}
-                      >
-                        <Print />
-                      </Button>
+    <>
+      {edit && <EditOrden setEdit={setEdit} id={selectedId} />}
 
-                      {/* Botón Descargar PDF */}
-                      <Button
-                        variant="contained"
-                        color="error"
-                        onClick={() => handleDownloadPDF(orden.id)}
-                      >
-                        <PictureAsPdf />
-                      </Button>
+      {!edit && (
+        <Card>
+          {selectedData && (
+            <ProformaModal
+              open={open}
+              handleClose={() => setOpen(false)}
+              data={selectedData}
+              id={selectedId}
+            />
+          )}
 
-                      {/* Botón Crear Proforma */}
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => {
-                          setSelectedId(orden.id);
-                          handleCreateProforma(orden.id);
-                        }}
-                        disabled={buttonLoading === orden.id}
-                        isLoading={buttonLoading === orden.id}
-                        sx={{ marginRight: 1, position: "relative" }}
-                      >
-                        <Description />
-                      </Button>
-
-                      {/* Botón Editar Detalles */}
-                      <Button
-                        variant="contained"
-                        color="secondary"
-                        onClick={() => {
-                          setSelectedId(orden.id);
-                          setModalOpenOrder(true);
-                        }}
-                        sx={{ marginRight: 1 }}
-                      >
-                        <Visibility />
-                      </Button>
-
-                      {/* Botón Crear Reparación */}
-                      <Button
-                        variant="contained"
-                        color="warning"
-                        onClick={() => {
-                          setSelectedId(orden.id);
-                          setCreateRepair(true);
-                        }}
-                      >
-                        <Build />
-                      </Button>
-                    </TableCell>
+          <OrderDetailsModal
+            orderId={selectedId}
+            open={modalOpenOrder}
+            onClose={() => setModalOpenOrder(false)}
+          />
+          <CreateRepairModal
+            ordenDeTrabajoId={selectedId}
+            open={createRepair}
+            onClose={() => setCreateRepair(false)}
+            onSave={handleSave}
+          />
+          <Scrollbar>
+            <Box sx={{ minWidth: 800 }}>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Cliente</TableCell>
+                    <TableCell>Marca de Motor</TableCell>
+                    <TableCell>Número de Motor</TableCell>
+                    <TableCell>Fecha de Registro</TableCell>
+                    <TableCell>Acciones</TableCell>
                   </TableRow>
-                ))}
-            </TableBody>
-          </Table>
-        </Box>
-      </Scrollbar>
-      <TablePagination
-        component="div"
-        count={ordenes.length}
-        onPageChange={handlePageChange}
-        onRowsPerPageChange={handleRowsPerPageChange}
-        page={page}
-        rowsPerPage={rowsPerPage}
-        rowsPerPageOptions={[5, 10, 25]}
-      />
-    </Card>
+                </TableHead>
+                <TableBody>
+                  {filteredOrdenes
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((orden) => (
+                      <TableRow hover key={orden.id}>
+                        <TableCell>{orden.cliente}</TableCell>
+                        <TableCell>{orden.marcaMotor}</TableCell>
+                        <TableCell>{orden.numeroMotor}</TableCell>
+                        <TableCell>
+                          {orden.fechaCreacion
+                            ? format(new Date(orden.fechaCreacion), "dd/MM/yyyy")
+                            : "No disponible"}
+                        </TableCell>
+                        <TableCell sx={{ display: "flex", gap: `5px` }}>
+                          {/* Botón Imprimir */}
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={() => handlePrint(orden.id)}
+                            sx={{ marginRight: 1 }}
+                          >
+                            <Print />
+                          </Button>
+
+                          {/* Botón Descargar PDF */}
+                          <Button
+                            variant="contained"
+                            color="error"
+                            onClick={() => handleDownloadPDF(orden.id)}
+                          >
+                            <PictureAsPdf />
+                          </Button>
+
+                          {/* Botón Crear Proforma */}
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={() => {
+                              setSelectedId(orden.id);
+                              handleCreateProforma(orden.id);
+                            }}
+                            disabled={buttonLoading === orden.id}
+                            isLoading={buttonLoading === orden.id}
+                            sx={{ marginRight: 1, position: "relative" }}
+                          >
+                            <Description />
+                          </Button>
+
+                          {/* Botón Editar Detalles */}
+                          <Button
+                            variant="contained"
+                            color="secondary"
+                            onClick={() => {
+                              setSelectedId(orden.id);
+                              setModalOpenOrder(true);
+                            }}
+                            sx={{ marginRight: 1 }}
+                          >
+                            <Visibility />
+                          </Button>
+
+                          {/* Botón Crear Reparación */}
+                          <Button
+                            variant="contained"
+                            color="warning"
+                            onClick={() => {
+                              setSelectedId(orden.id);
+                              setCreateRepair(true);
+                            }}
+                          >
+                            <Build />
+                          </Button>
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={() => {
+                              setSelectedId(orden.id);
+                              setEdit(true);
+                            }}
+                          >
+                            <Edit />
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </Table>
+            </Box>
+          </Scrollbar>
+          <TablePagination
+            component="div"
+            count={ordenes.length}
+            onPageChange={handlePageChange}
+            onRowsPerPageChange={handleRowsPerPageChange}
+            page={page}
+            rowsPerPage={rowsPerPage}
+            rowsPerPageOptions={[5, 10, 25]}
+          />
+        </Card>
+      )}
+    </>
   );
 };

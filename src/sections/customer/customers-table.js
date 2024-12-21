@@ -30,6 +30,8 @@ export const ReparacionesTable = (props) => {
     onRowsPerPageChange,
     page = 0,
     rowsPerPage = 0,
+    isEditModalOpen,
+    setEditModalOpen
   } = props;
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -39,7 +41,7 @@ export const ReparacionesTable = (props) => {
   const [states, setStates] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedRepair, setSelectedRepair] = useState(null);
-  const [isEditModalOpen, setEditModalOpen] = useState(false);
+
   const [isDetailsModalOpen, setDetailsModalOpen] = useState(false);
 
   useEffect(() => {

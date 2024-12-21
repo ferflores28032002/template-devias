@@ -73,7 +73,7 @@ const EditRepairModal = ({ open, onClose, repairData, onUpdate }) => {
         onUpdate();
         onClose();
       } else {
-        console.error("Failed to update repair:", await response.json());
+        alert('La fecha de estimación de entrega no puede ser posterior a la fecha de retiro final.')
       }
     } catch (error) {
       console.error("Error updating repair:", error);

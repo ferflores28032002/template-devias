@@ -23,6 +23,8 @@ export const ProformasTable = () => {
   const [proformas, setProformas] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [isModalOpen, setModalOpen] = useState(false);
+
   const [filteredProformas, setFilteredProformas] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedProforma, setSelectedProforma] = useState(null);
@@ -68,7 +70,7 @@ export const ProformasTable = () => {
 
   useEffect(() => {
     fetchProformas(); // Llamar a la función cuando el componente se monte
-  }, []);
+  }, [isModalOpen]);
 
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
@@ -215,7 +217,6 @@ export const ProformasTable = () => {
     printWindow.document.close();
     printWindow.print();
   };
-  const [isModalOpen, setModalOpen] = useState(false);
 
   const handleOpenModal = () => {
     setModalOpen(true);

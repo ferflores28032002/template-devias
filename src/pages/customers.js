@@ -28,6 +28,7 @@ const Page = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [data, setData] = useState([]);
+  const [isEditModalOpen, setEditModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -35,7 +36,7 @@ const Page = () => {
       setData(reparaciones);
     };
     fetchData();
-  }, []);
+  }, [isEditModalOpen]);
 
   const reparaciones = useReparaciones(page, rowsPerPage, data);
   const reparacionIds = useReparacionIds(reparaciones);
@@ -78,6 +79,8 @@ const Page = () => {
               page={page}
               rowsPerPage={rowsPerPage}
               selected={reparacionesSelection.selected}
+              setEditModalOpen={setEditModalOpen}
+              isEditModalOpen={isEditModalOpen}
             />
           </Stack>
         </Container>

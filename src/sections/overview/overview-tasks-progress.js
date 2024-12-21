@@ -77,7 +77,7 @@ export const OverviewTasksProgress = ({ sx }) => {
               </SvgIcon>
             </Stack>
             <Typography color="text.secondary" variant="caption">
-              Total de reparaciones finalizadas
+              Total de reparaciones
             </Typography>
           </Stack>
         )}

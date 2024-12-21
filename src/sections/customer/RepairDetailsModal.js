@@ -14,7 +14,7 @@ const modalStyle = {
   borderRadius: 2,
 };
 
-export default function RepairDetailsModal() {
+export default function RepairDetailsModal({ reparacion }) {
   const [open, setOpen] = useState(false);
 
   const handleOpen = () => setOpen(true);
@@ -23,7 +23,6 @@ export default function RepairDetailsModal() {
   return (
     <>
       <Button
-     
         startIcon={
           <SvgIcon fontSize="small">
             <EyeIcon />
@@ -40,36 +39,30 @@ export default function RepairDetailsModal() {
             Detalles de Reparación
           </Typography>
           <Typography>
-            <strong>Orden:</strong> #4514
+            <strong>Orden:</strong> #{reparacion?.ordenDeTrabajoId}
           </Typography>
           <Typography>
-            <strong>Proforma:</strong> #9454
+            <strong>Cliente:</strong> {reparacion?.cliente || "N/A"}
           </Typography>
           <Typography>
-            <strong>Cliente:</strong> Kevin
+            <strong>Fecha de Inicio:</strong>{" "}
+            {new Date(reparacion?.fechaInicio).toLocaleDateString()}
           </Typography>
           <Typography>
-            <strong>Fecha:</strong> 2024-11-30
+            <strong>Estado:</strong> {reparacion?.estado}
           </Typography>
           <Typography>
-            <strong>Estado:</strong> pendiente
+            <strong>Fecha de Retiro Final:</strong>{" "}
+            {new Date(reparacion?.fechaRetiroFinal).toLocaleDateString()}
           </Typography>
           <Typography>
-            <strong>Fecha de Entrega Esperada:</strong> 2024-12-15
+            <strong>Fecha de Entrega Esperada:</strong>{" "}
+            {new Date(reparacion?.fechaEstimadaEntrega).toLocaleDateString()}
           </Typography>
-          <Typography sx={{ mt: 2 }}>
-            <strong>Items:</strong>
-          </Typography>
-          <Typography>Encamisar Block - C$6500</Typography>
-          <Typography>Rectificar Superficie de Block - C$3500</Typography>
-          <Typography>Cambiar 4 Bushings de Bielas - C$1500</Typography>
-          <Typography>Rectificar Cigüeñal - C$2500</Typography>
           <Typography sx={{ mt: 2 }}>
             <strong>Repuestos:</strong>
           </Typography>
-          <Typography>
-            Camisas semi acabadas, Pistones STD, 2 Brazos de Bielas Nuevos, 4 Bushings de Bielas
-          </Typography>
+          <Typography>{reparacion?.respuestos || "Sin información"}</Typography>
           <Button variant="contained" color="primary" onClick={handleClose} sx={{ mt: 3 }}>
             Cerrar
           </Button>

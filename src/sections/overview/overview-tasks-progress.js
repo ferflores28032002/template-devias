@@ -1,64 +1,91 @@
 import PropTypes from 'prop-types';
-import ListBulletIcon from '@heroicons/react/24/solid/ListBulletIcon';
+import ArrowDownIcon from '@heroicons/react/24/solid/ArrowDownIcon';
+import ArrowUpIcon from '@heroicons/react/24/solid/ArrowUpIcon';
+import DocumentIcon from '@heroicons/react/24/solid/DocumentIcon';
 import {
   Avatar,
-  Box,
   Card,
   CardContent,
-  LinearProgress,
   Stack,
   SvgIcon,
-  Typography
+  Typography,
+  CircularProgress
 } from '@mui/material';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
-export const OverviewTasksProgress = (props) => {
-  const { value, sx } = props;
+export const OverviewTasksProgress = ({ sx }) => {
+  const [reparaciones, setReparaciones] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchReparaciones = async () => {
+      try {
+        const response = await axios.get('https://www.tallercenteno.somee.com/api/Reparaciones');
+        setReparaciones(response.data);
+      } catch (err) {
+        setError('Error fetching reparaciones');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchReparaciones();
+  }, []);
+
+  const totalReparaciones = reparaciones.length;
+  const finalizadas = reparaciones.filter((reparacion) => reparacion.estado === 'Finalizado').length;
+  const difference = totalReparaciones > 0 ? ((finalizadas / totalReparaciones) * 100).toFixed(2) : 0;
+  const positive = difference >= 50;
 
   return (
     <Card sx={sx}>
       <CardContent>
-        <Stack
-          alignItems="flex-start"
-          direction="row"
-          justifyContent="space-between"
-          spacing={3}
-        >
+        <Stack alignItems="flex-start" direction="row" justifyContent="space-between" spacing={3}>
           <Stack spacing={1}>
-            <Typography
-              color="text.secondary"
-              gutterBottom
-              variant="overline"
-            >
-              Total de proformas
+            <Typography color="text.secondary" variant="overline">
+              Reparaciones
             </Typography>
-            <Typography variant="h4">
-              {value}%
-            </Typography>
+            {isLoading ? (
+              <CircularProgress size={24} />
+            ) : error ? (
+              <Typography color="error.main" variant="body2">
+                {error}
+              </Typography>
+            ) : (
+              <Typography variant="h4">{totalReparaciones}</Typography>
+            )}
           </Stack>
           <Avatar
             sx={{
-              backgroundColor: 'warning.main',
+              backgroundColor: 'primary.main',
               height: 56,
-              width: 56
+              width: 56,
             }}
           >
             <SvgIcon>
-              <ListBulletIcon />
+              <DocumentIcon />
             </SvgIcon>
           </Avatar>
         </Stack>
-        <Box sx={{ mt: 3 }}>
-          <LinearProgress
-            value={value}
-            variant="determinate"
-          />
-        </Box>
+        {!isLoading && !error && (
+          <Stack alignItems="center" direction="row" spacing={2} sx={{ mt: 2 }}>
+            <Stack alignItems="center" direction="row" spacing={0.5}>
+              <SvgIcon color={positive ? 'success' : 'error'} fontSize="small">
+                {positive ? <ArrowUpIcon /> : <ArrowDownIcon />}
+              </SvgIcon>
+            </Stack>
+            <Typography color="text.secondary" variant="caption">
+              Total de reparaciones finalizadas
+            </Typography>
+          </Stack>
+        )}
       </CardContent>
     </Card>
   );
 };
 
 OverviewTasksProgress.propTypes = {
-  value: PropTypes.number.isRequired,
-  sx: PropTypes.object
+  sx: PropTypes.object,
 };

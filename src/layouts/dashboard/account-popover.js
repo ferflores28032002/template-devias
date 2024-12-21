@@ -42,7 +42,7 @@ export const AccountPopover = (props) => {
           color="text.secondary"
           variant="body2"
         >
-          Anika Visser
+          usuario admin
         </Typography>
       </Box>
       <Divider />
@@ -57,7 +57,7 @@ export const AccountPopover = (props) => {
         }}
       >
         <MenuItem onClick={handleSignOut}>
-          Sign out
+          cerrar sesión
         </MenuItem>
       </MenuList>
     </Popover>

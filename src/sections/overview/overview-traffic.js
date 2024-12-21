@@ -1,7 +1,4 @@
 import PropTypes from 'prop-types';
-import ComputerDesktopIcon from '@heroicons/react/24/solid/ComputerDesktopIcon';
-import DeviceTabletIcon from '@heroicons/react/24/solid/DeviceTabletIcon';
-import PhoneIcon from '@heroicons/react/24/solid/PhoneIcon';
 import {
   Box,
   Card,
@@ -13,6 +10,8 @@ import {
   useTheme
 } from '@mui/material';
 import { Chart } from 'src/components/chart';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const useChartOptions = (labels) => {
   const theme = useTheme();
@@ -62,82 +61,105 @@ const useChartOptions = (labels) => {
   };
 };
 
-const iconMap = {
-  Desktop: (
-    <SvgIcon>
-      <ComputerDesktopIcon />
-    </SvgIcon>
-  ),
-  Tablet: (
-    <SvgIcon>
-      <DeviceTabletIcon />
-    </SvgIcon>
-  ),
-  Phone: (
-    <SvgIcon>
-      <PhoneIcon />
-    </SvgIcon>
-  )
-};
+export const OverviewTraffic = ({ sx }) => {
+  const [chartSeries, setChartSeries] = useState([]);
+  const [labels, setLabels] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-export const OverviewTraffic = (props) => {
-  const { chartSeries, labels, sx } = props;
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const estadosResponse = await axios.get('https://www.tallercenteno.somee.com/api/Reparaciones/Estados');
+        const reparacionesResponse = await axios.get('https://www.tallercenteno.somee.com/api/Reparaciones');
+
+        const estados = estadosResponse.data;
+        setLabels(estados.map((estado) => estado.nombre));
+
+        const seriesData = estados.map((estado) => {
+          return reparacionesResponse.data.filter((reparacion) => reparacion.estado === estado.nombre).length;
+        });
+
+        setChartSeries(seriesData);
+      } catch (err) {
+        setError('Error fetching data');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   const chartOptions = useChartOptions(labels);
 
   return (
     <Card sx={sx}>
-      <CardHeader title="Estimaciones" />
+      <CardHeader title="Estado de Reparaciones" />
       <CardContent>
-        <Chart
-          height={300}
-          options={chartOptions}
-          series={chartSeries}
-          type="donut"
-          width="100%"
-        />
-        <Stack
-          alignItems="center"
-          direction="row"
-          justifyContent="center"
-          spacing={2}
-          sx={{ mt: 2 }}
-        >
-          {chartSeries.map((item, index) => {
-            const label = labels[index];
+        {isLoading ? (
+          <Typography variant="body2" color="text.secondary">
+            Cargando...
+          </Typography>
+        ) : error ? (
+          <Typography variant="body2" color="error.main">
+            {error}
+          </Typography>
+        ) : (
+          <>
+            <Chart
+              height={300}
+              options={chartOptions}
+              series={chartSeries}
+              type="donut"
+              width="100%"
+            />
+            <Stack
+              alignItems="center"
+              direction="row"
+              justifyContent="center"
+              spacing={2}
+              sx={{ mt: 2 }}
+            >
+              {chartSeries.map((item, index) => {
+                const label = labels[index];
+                const color = chartOptions.colors[index] || '#000';
 
-            return (
-              <Box
-                key={label}
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center'
-                }}
-              >
-                {iconMap[label]}
-                <Typography
-                  sx={{ my: 1 }}
-                  variant="h6"
-                >
-                  {label}
-                </Typography>
-                <Typography
-                  color="text.secondary"
-                  variant="subtitle2"
-                >
-                  {item}%
-                </Typography>
-              </Box>
-            );
-          })}
-        </Stack>
+                return (
+                  <Box
+                    key={label}
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center'
+                    }}
+                  >
+                    <SvgIcon>
+                      <circle cx="12" cy="12" r="10" fill={color} />
+                    </SvgIcon>
+                    <Typography
+                      sx={{ my: 1 }}
+                      variant="h6"
+                    >
+                      {label}
+                    </Typography>
+                    <Typography
+                      color="text.secondary"
+                      variant="subtitle2"
+                    >
+                      {item}
+                    </Typography>
+                  </Box>
+                );
+              })}
+            </Stack>
+          </>
+        )}
       </CardContent>
     </Card>
   );
 };
 
 OverviewTraffic.propTypes = {
-  chartSeries: PropTypes.array.isRequired,
-  labels: PropTypes.array.isRequired,
   sx: PropTypes.object
 };

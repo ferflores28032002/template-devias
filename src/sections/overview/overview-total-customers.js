@@ -1,74 +1,76 @@
 import PropTypes from 'prop-types';
 import ArrowDownIcon from '@heroicons/react/24/solid/ArrowDownIcon';
 import ArrowUpIcon from '@heroicons/react/24/solid/ArrowUpIcon';
-import UsersIcon from '@heroicons/react/24/solid/UsersIcon';
-import { Avatar, Card, CardContent, Stack, SvgIcon, Typography } from '@mui/material';
+import DocumentIcon from '@heroicons/react/24/solid/DocumentIcon';
+import { Avatar, Card, CardContent, Stack, SvgIcon, Typography, CircularProgress } from '@mui/material';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
-export const OverviewTotalCustomers = (props) => {
-  const { difference, positive = false, sx, value } = props;
+export const OverviewTotalCustomers = ({ sx }) => {
+  const [proformas, setProformas] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchProformas = async () => {
+      try {
+        const response = await axios.get('https://www.tallercenteno.somee.com/api/Proformas');
+        setProformas(response.data);
+      } catch (err) {
+        setError('Error fetching proformas');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProformas();
+  }, []);
+
+  const totalProformas = proformas.length;
+  const issuedProformas = proformas.filter((proforma) => proforma.estado === 'Emitida').length;
+  const difference = totalProformas > 0 ? ((issuedProformas / totalProformas) * 100).toFixed(2) : 0;
+  const positive = difference >= 50;
 
   return (
     <Card sx={sx}>
       <CardContent>
-        <Stack
-          alignItems="flex-start"
-          direction="row"
-          justifyContent="space-between"
-          spacing={3}
-        >
+        <Stack alignItems="flex-start" direction="row" justifyContent="space-between" spacing={3}>
           <Stack spacing={1}>
-            <Typography
-              color="text.secondary"
-              variant="overline"
-            >
-              Ordenes
+            <Typography color="text.secondary" variant="overline">
+              Proformas
             </Typography>
-            <Typography variant="h4">
-              {value}
-            </Typography>
+            {isLoading ? (
+              <CircularProgress size={24} />
+            ) : error ? (
+              <Typography color="error.main" variant="body2">
+                {error}
+              </Typography>
+            ) : (
+              <Typography variant="h4">{totalProformas}</Typography>
+            )}
           </Stack>
           <Avatar
             sx={{
-              backgroundColor: 'success.main',
+              backgroundColor: 'primary.main',
               height: 56,
-              width: 56
+              width: 56,
             }}
           >
             <SvgIcon>
-              <UsersIcon />
+              <DocumentIcon />
             </SvgIcon>
           </Avatar>
         </Stack>
-        {difference && (
-          <Stack
-            alignItems="center"
-            direction="row"
-            spacing={2}
-            sx={{ mt: 2 }}
-          >
-            <Stack
-              alignItems="center"
-              direction="row"
-              spacing={0.5}
-            >
-              <SvgIcon
-                color={positive ? 'success' : 'error'}
-                fontSize="small"
-              >
+        {!isLoading && !error && (
+          <Stack alignItems="center" direction="row" spacing={2} sx={{ mt: 2 }}>
+            <Stack alignItems="center" direction="row" spacing={0.5}>
+              <SvgIcon color={positive ? 'success' : 'error'} fontSize="small">
                 {positive ? <ArrowUpIcon /> : <ArrowDownIcon />}
               </SvgIcon>
-              <Typography
-                color={positive ? 'success.main' : 'error.main'}
-                variant="body2"
-              >
-                {difference}%
-              </Typography>
+             
             </Stack>
-            <Typography
-              color="text.secondary"
-              variant="caption"
-            >
-              Total de reparaciones
+            <Typography color="text.secondary" variant="caption">
+              Total de proformas emitidas
             </Typography>
           </Stack>
         )}
@@ -78,9 +80,5 @@ export const OverviewTotalCustomers = (props) => {
 };
 
 OverviewTotalCustomers.propTypes = {
-  difference: PropTypes.number,
-  positive: PropTypes.bool,
-  value: PropTypes.string.isRequired,
-  sx: PropTypes.object
+  sx: PropTypes.object,
 };
-

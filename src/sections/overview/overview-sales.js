@@ -11,6 +11,8 @@ import {
   SvgIcon
 } from '@mui/material';
 import { alpha, useTheme } from '@mui/material/styles';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 import { Chart } from 'src/components/chart';
 
 const useChartOptions = () => {
@@ -72,14 +74,14 @@ const useChartOptions = () => {
         show: true
       },
       categories: [
-        'Jan',
+        'ene',
         'Feb',
         'Mar',
-        'Apr',
+        'Abr',
         'May',
         'Jun',
         'Jul',
-        'Aug',
+        'Ago',
         'Sep',
         'Oct',
         'Nov',
@@ -104,56 +106,86 @@ const useChartOptions = () => {
   };
 };
 
-export const OverviewSales = (props) => {
-  const { chartSeries, sx } = props;
+export const OverviewSales = ({ sx }) => {
+  const [reparaciones, setReparaciones] = useState([]);
+  const [chartSeries, setChartSeries] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
   const chartOptions = useChartOptions();
+
+  useEffect(() => {
+    const fetchReparaciones = async () => {
+      try {
+        const response = await axios.get('https://www.tallercenteno.somee.com/api/Reparaciones');
+        setReparaciones(response.data);
+        const monthlyData = Array(12).fill(0);
+        response.data.forEach((reparacion) => {
+          const month = new Date(reparacion.fechaInicio).getMonth();
+          monthlyData[month] += 1;
+        });
+        setChartSeries([{ name: 'Reparaciones', data: monthlyData }]);
+      } catch (err) {
+        setError('Error fetching reparaciones');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchReparaciones();
+  }, []);
 
   return (
     <Card sx={sx}>
       <CardHeader
-        action={(
+        action={
           <Button
             color="inherit"
             size="small"
-            startIcon={(
+            startIcon={
               <SvgIcon fontSize="small">
                 <ArrowPathIcon />
               </SvgIcon>
-            )}
+            }
+            onClick={() => window.location.reload()}
           >
             Sync
           </Button>
-        )}
-        title="Recaudación mensual"
+        }
+        title="Reparaciones Mensuales"
       />
       <CardContent>
-        <Chart
-          height={350}
-          options={chartOptions}
-          series={chartSeries}
-          type="bar"
-          width="100%"
-        />
+        {isLoading ? (
+          <p>Cargando...</p>
+        ) : error ? (
+          <p style={{ color: 'red' }}>{error}</p>
+        ) : (
+          <Chart
+            height={350}
+            options={chartOptions}
+            series={chartSeries}
+            type="bar"
+            width="100%"
+          />
+        )}
       </CardContent>
       <Divider />
       <CardActions sx={{ justifyContent: 'flex-end' }}>
         <Button
           color="inherit"
-          endIcon={(
+          endIcon={
             <SvgIcon fontSize="small">
               <ArrowRightIcon />
             </SvgIcon>
-          )}
+          }
           size="small"
         >
-          Overview
+          Ver Detalles
         </Button>
       </CardActions>
     </Card>
   );
 };
 
-OverviewSales.protoTypes = {
-  chartSeries: PropTypes.array.isRequired,
+OverviewSales.propTypes = {
   sx: PropTypes.object
 };

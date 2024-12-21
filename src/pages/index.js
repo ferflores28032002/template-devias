@@ -66,7 +66,7 @@ const Page = () => (
               value={75.5}
             />
           </Grid>
-          <Grid
+          {/* <Grid
             xs={12}
             sm={6}
             lg={3}
@@ -75,7 +75,7 @@ const Page = () => (
               sx={{ height: '100%' }}
               value="$15k"
             />
-          </Grid>
+          </Grid> */}
           <Grid
             xs={12}
             lg={8}
@@ -105,7 +105,7 @@ const Page = () => (
               sx={{ height: '100%' }}
             />
           </Grid>
-          <Grid
+          {/* <Grid
             xs={12}
             md={6}
             lg={4}
@@ -145,8 +145,8 @@ const Page = () => (
               ]}
               sx={{ height: '100%' }}
             />
-          </Grid>
-          <Grid
+          </Grid> */}
+          {/* <Grid
             xs={12}
             md={12}
             lg={8}
@@ -216,7 +216,7 @@ const Page = () => (
               ]}
               sx={{ height: '100%' }}
             />
-          </Grid>
+          </Grid> */}
         </Grid>
       </Container>
     </Box>

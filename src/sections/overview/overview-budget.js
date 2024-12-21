@@ -2,10 +2,40 @@ import PropTypes from "prop-types";
 import ArrowDownIcon from "@heroicons/react/24/solid/ArrowDownIcon";
 import ArrowUpIcon from "@heroicons/react/24/solid/ArrowUpIcon";
 import CurrencyDollarIcon from "@heroicons/react/24/solid/CurrencyDollarIcon";
-import { Avatar, Card, CardContent, Stack, SvgIcon, Typography } from "@mui/material";
+import {
+  Avatar,
+  Card,
+  CardContent,
+  Stack,
+  SvgIcon,
+  Typography,
+  CircularProgress,
+} from "@mui/material";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
-export const OverviewBudget = (props) => {
-  const { difference, positive = false, sx, value } = props;
+export const OverviewBudget = ({ sx }) => {
+  const [orders, setOrders] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const response = await axios.get("https://www.tallercenteno.somee.com/api/OrdenTrabajo");
+        setOrders(response.data);
+      } catch (err) {
+        setError("Error fetching data");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchOrders();
+  }, []);
+
+  const totalOrders = orders.length;
+  const positive = totalOrders >= 10; // Define a threshold dynamically
 
   return (
     <Card sx={sx}>
@@ -15,7 +45,15 @@ export const OverviewBudget = (props) => {
             <Typography color="text.secondary" variant="overline">
               Ordenes
             </Typography>
-            <Typography variant="h4">{value}</Typography>
+            {isLoading ? (
+              <CircularProgress size={24} />
+            ) : error ? (
+              <Typography color="error.main" variant="body2">
+                {error}
+              </Typography>
+            ) : (
+              <Typography variant="h4">{totalOrders}</Typography>
+            )}
           </Stack>
           <Avatar
             sx={{
@@ -29,18 +67,15 @@ export const OverviewBudget = (props) => {
             </SvgIcon>
           </Avatar>
         </Stack>
-        {difference && (
+        {!isLoading && !error && (
           <Stack alignItems="center" direction="row" spacing={2} sx={{ mt: 2 }}>
             <Stack alignItems="center" direction="row" spacing={0.5}>
               <SvgIcon color={positive ? "success" : "error"} fontSize="small">
                 {positive ? <ArrowUpIcon /> : <ArrowDownIcon />}
               </SvgIcon>
-              <Typography color={positive ? "success.main" : "error.main"} variant="body2">
-                {difference}%
-              </Typography>
             </Stack>
             <Typography color="text.secondary" variant="caption">
-              Total de orden por mes
+              Total de ordenes
             </Typography>
           </Stack>
         )}
@@ -49,9 +84,6 @@ export const OverviewBudget = (props) => {
   );
 };
 
-OverviewBudget.prototypes = {
-  difference: PropTypes.number,
-  positive: PropTypes.bool,
+OverviewBudget.propTypes = {
   sx: PropTypes.object,
-  value: PropTypes.string.isRequired,
 };

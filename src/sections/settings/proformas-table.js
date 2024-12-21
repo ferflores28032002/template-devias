@@ -99,52 +99,63 @@ export const ProformasTable = () => {
       34
     );
     doc.text("Managua, Nicaragua.", 14, 40);
-    doc.setFont(undefined, "bold");
-    doc.text("PROFORMA N° ", 150, 20);
-    doc.setTextColor(255, 0, 0);
-    doc.text(data.numeroProforma, 180, 20);
-    doc.setTextColor(40);
-    doc.setFont(undefined, "normal");
-    doc.text(`Fecha: ${data.fechaEmision}`, 150, 28);
 
-    // Información general
-    doc.setFontSize(12);
-    doc.setTextColor(60);
-    doc.text("Número de Proforma: " + data.numeroProforma, 14, 50);
-    doc.text("Cliente: " + data.cliente, 14, 56);
-    doc.text("Estado: " + data.estado, 14, 62);
+    // Datos principales en columnas
+    doc.setFont(undefined, "bold");
+    doc.text("Factura N°:", 14, 50);
+    doc.setTextColor(255, 0, 0);
+    doc.text(data.numeroProforma, 50, 50);
+    doc.setTextColor(40);
+    doc.text("Fecha:", 120, 50);
+    doc.text(data.fechaEmision, 140, 50);
+
+    doc.setFont(undefined, "normal");
+    doc.text("Cliente:", 14, 58);
+    doc.text(data.cliente, 50, 58);
+    doc.text("Estado:", 120, 58);
+    doc.text(data.estado, 140, 58);
+
+    // Línea separadora
+    doc.setDrawColor(200);
+    doc.line(14, 64, 200, 64);
 
     // Tabla de detalles
     doc.autoTable({
       startY: 70,
-      head: [["Descripción", "Precio"]],
-      body: data.items.map((item) => [item.descripcion, item.precio]),
-      styles: { halign: "center", fillColor: [230, 230, 250] },
+      head: [["Descripción", "Cantidad", "Precio Unitario", "Total"]],
+      body: data.items.map((item) => [
+        item.descripcion,
+        item.cantidad,
+        item.precioUnitario,
+        item.total,
+      ]),
+      styles: { halign: "center", fillColor: [240, 240, 240] },
       headStyles: { fillColor: [100, 100, 255], textColor: [255, 255, 255] },
     });
 
-    // Repuestos
-    doc.setFontSize(12);
-    doc.text("Repuestos: " + data.respuestos, 14, doc.lastAutoTable.finalY + 10);
-
-    // Totales
-    doc.text("Subtotal: " + data.subtotal, 14, doc.lastAutoTable.finalY + 20);
-    doc.text("IVA: " + data.iva, 14, doc.lastAutoTable.finalY + 26);
-    doc.text("Total: " + data.total, 14, doc.lastAutoTable.finalY + 32);
-    doc.text("Adelanto: " + data.adelanto, 14, doc.lastAutoTable.finalY + 38);
-    doc.text("Saldo Pendiente: " + data.saldoPendiente, 14, doc.lastAutoTable.finalY + 44);
+    // Resumen de totales en columnas
+    const finalY = doc.lastAutoTable.finalY + 10;
+    doc.setFont(undefined, "bold");
+    doc.text("Resumen:", 14, finalY);
+    doc.setFont(undefined, "normal");
+    doc.text("Subtotal:", 14, finalY + 6);
+    doc.text(data.subtotal, 50, finalY + 6);
+    doc.text("IVA:", 14, finalY + 12);
+    doc.text(data.iva, 50, finalY + 12);
+    doc.text("Total:", 14, finalY + 18);
+    doc.text(data.total, 50, finalY + 18);
+    doc.text("Adelanto:", 14, finalY + 24);
+    doc.text(data.adelanto, 50, finalY + 24);
+    doc.text("Saldo Pendiente:", 14, finalY + 30);
+    doc.text(data.saldoPendiente, 50, finalY + 30);
 
     // Pie de página
     doc.setFontSize(10);
     doc.setTextColor(80);
-    doc.text(
-      "Favor elaborar cheque a nombre de: Juan José Centeno Rosales",
-      14,
-      doc.lastAutoTable.finalY + 60
-    );
-    doc.text("Este documento NO es sustituto de factura", 14, doc.lastAutoTable.finalY + 65);
+    doc.text("Favor elaborar cheque a nombre de: Juan José Centeno Rosales", 14, finalY + 50);
+    doc.text("Este documento NO es sustituto de factura", 14, finalY + 55);
 
-    doc.save(`Proforma_${data.numeroProforma}.pdf`);
+    doc.save(`Factura_${data.numeroProforma}.pdf`);
   };
 
   const handlePrint = async (id) => {

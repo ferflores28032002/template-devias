@@ -214,18 +214,38 @@ export const AccountProfileDetails = () => {
                   />
                 </Grid>
               ))}
-              <Grid item xs={12} md={4}>
-                <Controller
-                  name="reconstruirAxial"
-                  control={control}
-                  render={({ field }) => (
-                    <FormControlLabel
-                      control={<Checkbox {...field} checked={field.value} />}
-                      label="Reconstruir Axial"
-                    />
-                  )}
-                />
-              </Grid>
+
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 5,
+                  flexWrap: "wrap",
+                  marginLeft: 3,
+                  marginTop: 2,
+                }}
+              >
+                {[
+                  "RellenarAxial",
+                  "PistaTrasera",
+                  "PistaDelantera",
+                  "CambioPiniones",
+                  "ReconstruirPuntaCigueñal",
+                  "ReconstruirAxial",
+                ].map((name) => (
+                  <Controller
+                    key={name}
+                    name={name}
+                    control={control}
+                    render={({ field }) => (
+                      <FormControlLabel
+                        control={<Checkbox {...field} checked={field.value} />}
+                        label={name}
+                      />
+                    )}
+                  />
+                ))}
+              </Box>
               <Grid item xs={12} md={12}>
                 <Controller
                   name="notasCigueñal"
@@ -261,13 +281,13 @@ export const AccountProfileDetails = () => {
                   "encamisado",
                   "rectificado",
                   "pulido",
-                  "pistaDelantera",
+
                   "cambioBujeDeLeva",
                   "reconstruirCojinetebancada",
                   "superficieBlock",
                   "superficieBlockCejas",
                   "medirPertuberanciaPistones",
-                  "hacerBushines",
+
                   "rectificarBanca",
                 ].map((name) => (
                   <Controller
@@ -359,10 +379,35 @@ export const AccountProfileDetails = () => {
                 />
               </Grid>
 
-              {/* Sección Final */}
               <Grid item xs={12}>
-                <Typography variant="h6">Sección Final</Typography>
+                <Typography variant="h6">Biela</Typography>
               </Grid>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 5,
+                  flexWrap: "wrap",
+                  marginLeft: 3,
+                }}
+              >
+                {["cambiarBujies", "hacerBushines"].map((name) => (
+                  <Controller
+                    key={name}
+                    name={name}
+                    control={control}
+                    render={({ field }) => (
+                      <FormControlLabel
+                        control={<Checkbox {...field} checked={field.value} />}
+                        label={name}
+                      />
+                    )}
+                  />
+                ))}
+              </Box>
+
+              {/* Sección Final */}
+
               <Grid item xs={12} md={4}>
                 <Controller
                   name="numeroLevas"
@@ -395,18 +440,7 @@ export const AccountProfileDetails = () => {
                   )}
                 />
               </Grid>
-              <Grid item xs={12} md={4}>
-                <Controller
-                  name="cambiarBujies"
-                  control={control}
-                  render={({ field }) => (
-                    <FormControlLabel
-                      control={<Checkbox {...field} checked={field.value} />}
-                      label="Cambiar Bujies"
-                    />
-                  )}
-                />
-              </Grid>
+
               <Grid item xs={12} md={12}>
                 <Controller
                   name="notasBiela"

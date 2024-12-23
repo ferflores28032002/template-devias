@@ -66,21 +66,21 @@ export const Orden = ({ searchQuery }) => {
         `https://www.tallercenteno.somee.com/api/OrdenTrabajo/${id}`
       );
       const data = response.data;
-  
+
       const doc = new jsPDF();
-  
+
       // Encabezado
       doc.setFontSize(10);
       doc.setTextColor(0, 0, 0);
       doc.text("De Taller Centeno", 14, 15);
       doc.text("Iglesia Santa Ana 1c. al Sur y ½ c. arriba", 14, 20);
-      doc.text("Teléfonos: 2255-7211 / 2265-8139", 14, 25);
+      doc.text("Teléfonos: 2266-7121", 14, 25);
       doc.text("Managua, Nicaragua.", 14, 30);
-  
+
       doc.setFontSize(12);
       doc.setFont("Helvetica", "bold");
       doc.text("ORDEN DE TRABAJO", 105, 40, { align: "center" });
-  
+
       doc.setFontSize(10);
       doc.setFont("Helvetica", "normal");
       doc.text(
@@ -91,7 +91,7 @@ export const Orden = ({ searchQuery }) => {
         15,
         { align: "right" }
       );
-  
+
       // Información del cliente
       doc.autoTable({
         startY: 50,
@@ -106,16 +106,17 @@ export const Orden = ({ searchQuery }) => {
         },
         styles: { fontSize: 10 },
       });
-  
+
       let currentY = doc.lastAutoTable.finalY + 10;
-  
+
       // Tabla de servicios realizados
       doc.autoTable({
         startY: currentY,
         head: [["Servicios"]],
-        body: data.servicios.length > 0
-          ? data.servicios.map((servicio) => [servicio])
-          : [["No hay servicios registrados"]],
+        body:
+          data.servicios.length > 0
+            ? data.servicios.map((servicio) => [servicio])
+            : [["No hay servicios registrados"]],
         styles: {
           fontSize: 9,
           fillColor: [240, 240, 240],
@@ -125,16 +126,14 @@ export const Orden = ({ searchQuery }) => {
           textColor: [255, 255, 255],
         },
       });
-  
+
       currentY = doc.lastAutoTable.finalY + 10;
-  
+
       // Tabla de repuestos
       doc.autoTable({
         startY: currentY,
         head: [["Repuestos"]],
-        body: data.respuesto
-          ? [[data.respuesto]]
-          : [["No hay repuestos registrados"]],
+        body: data.respuesto ? [[data.respuesto]] : [["No hay repuestos registrados"]],
         styles: {
           fontSize: 9,
           fillColor: [255, 255, 255],
@@ -144,9 +143,9 @@ export const Orden = ({ searchQuery }) => {
           textColor: [255, 255, 255],
         },
       });
-  
+
       currentY = doc.lastAutoTable.finalY + 10;
-  
+
       // Tabla de notas
       const notas = [
         { title: "Biela", content: data.notasBiela || "No hay notas" },
@@ -154,7 +153,7 @@ export const Orden = ({ searchQuery }) => {
         { title: "Cigüeñal", content: data.notasCigueñal || "No hay notas" },
         { title: "Culatas", content: data.notasCulatas || "No hay notas" },
       ];
-  
+
       doc.autoTable({
         startY: currentY,
         head: [["Notas", "Detalle"]],
@@ -168,44 +167,43 @@ export const Orden = ({ searchQuery }) => {
           textColor: [255, 255, 255],
         },
       });
-  
+
       currentY = doc.lastAutoTable.finalY + 10;
-  
+
       // Pie de página
       if (currentY + 30 > doc.internal.pageSize.height) {
         doc.addPage();
         currentY = 10;
       }
-  
+
       doc.setFontSize(10);
       doc.setTextColor(255, 0, 0);
       doc.text("SU TRABAJO SERÁ ENTREGADO", 14, currentY);
       doc.text("SOLAMENTE CON LA PRESENTACIÓN", 14, currentY + 5);
       doc.text("DE ESTE RECIBO", 14, currentY + 10);
-  
+
       doc.text(
         "NO SOMOS RESPONSABLES DE CUALQUIER TRABAJO RECIBIDO MÁS DE 30 DÍAS",
         14,
         currentY + 20
       );
-  
+
       // Guardar PDF
       doc.save(`Orden_${id}.pdf`);
     } catch (error) {
       console.error("Error downloading PDF:", error);
     }
   };
-  
 
   const handlePrint = async (id) => {
     try {
-        const response = await axios.get(
-            `https://www.tallercenteno.somee.com/api/OrdenTrabajo/${id}`
-        );
-        const data = response.data;
+      const response = await axios.get(
+        `https://www.tallercenteno.somee.com/api/OrdenTrabajo/${id}`
+      );
+      const data = response.data;
 
-        const printWindow = window.open("", "_blank");
-        printWindow.document.write(`
+      const printWindow = window.open("", "_blank");
+      printWindow.document.write(`
       <html>
         <head>
           <title>Imprimir Orden</title>
@@ -231,13 +229,13 @@ export const Orden = ({ searchQuery }) => {
           <div class="header">
             <h2>De Taller Centeno</h2>
             <p><strong>TODA CLASE DE TRABAJOS DE TORNO, FRESA Y SOLDADURA</strong></p>
-            <p>Iglesia Santa Ana 1c. al Sur y ½ c. arriba. Teléfonos: 2255-7211 / 2265-8139</p>
+            <p>Iglesia Santa Ana 1c. al Sur y ½ c. arriba. Teléfonos: 2266-7121</p>
             <p>Managua, Nicaragua.</p>
             <div class="title">ORDEN DE TRABAJO N° ${id}</div>
             <p>Fecha de Registro: ${
-                data.fechaRegistro
-                    ? format(new Date(data.fechaRegistro), "dd/MM/yyyy")
-                    : "No disponible"
+              data.fechaRegistro
+                ? format(new Date(data.fechaRegistro), "dd/MM/yyyy")
+                : "No disponible"
             }</p>
           </div>
 
@@ -279,13 +277,12 @@ export const Orden = ({ searchQuery }) => {
         </body>
       </html>
     `);
-        printWindow.document.close();
-        printWindow.print();
+      printWindow.document.close();
+      printWindow.print();
     } catch (error) {
-        console.error("Error printing order:", error);
+      console.error("Error printing order:", error);
     }
-};
-
+  };
 
   const handleCreateProforma = async (id) => {
     try {

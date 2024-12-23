@@ -95,11 +95,7 @@ export const ProformasTable = () => {
     doc.setFont(undefined, "bold");
     doc.text("TODA CLASE DE TRABAJOS DE TORNO, FRESA Y SOLDADURA", 14, 28);
     doc.setFont(undefined, "normal");
-    doc.text(
-      "Iglesia Santa Ana 1c. al Sur y ½ c. arriba. Teléfonos: 2255-7211 / 2265-8139",
-      14,
-      34
-    );
+    doc.text("Iglesia Santa Ana 1c. al Sur y ½ c. arriba. Teléfonos: 2266-7121", 14, 34);
     doc.text("Managua, Nicaragua.", 14, 40);
     doc.text("No. RUC: 0012406510003K", 14, 46); // Agregar el RUC
 
@@ -114,16 +110,18 @@ export const ProformasTable = () => {
     doc.text(data.cliente, 50, 64);
     doc.text("Marca de Motor:", 14, 70); // Agregar Marca de Motor
     doc.text(data.marcaMotor, 50, 70);
+    doc.text("Numero de Motor:", 14, 76); // Ajustar para evitar superposición
+    doc.text(data.numeroMotor, 50, 76);
     doc.text("Estado:", 120, 64);
     doc.text(data.estado, 140, 64);
 
     // Línea separadora
     doc.setDrawColor(200);
-    doc.line(14, 76, 200, 76);
+    doc.line(14, 82, 200, 82);
 
     // Tabla de detalles (sin columnas de "Cantidad" y "Total")
     doc.autoTable({
-      startY: 82,
+      startY: 88,
       head: [["Descripción", "Precio Unitario"]],
       body: data.items.map((item) => [item.descripcion, item.precio || "-"]),
       styles: { halign: "center", fillColor: [240, 240, 240] },
@@ -207,7 +205,7 @@ export const ProformasTable = () => {
           <div class="header">
             <h2>Taller Centeno</h2>
             <p><strong>TODA CLASE DE TRABAJOS DE TORNO, FRESA Y SOLDADURA</strong></p>
-            <p>Iglesia Santa Ana 1c. al Sur y ½ c. arriba. Teléfonos: 2255-7211 / 2265-8139</p>
+            <p>Iglesia Santa Ana 1c. al Sur y ½ c. arriba. Teléfonos: 2266-7121</p>
             <p>Managua, Nicaragua.</p>
             <p><strong>No. RUC:</strong> 0012406510003K</p>
             <h3 style="color: red;">${data.numeroProforma}</h3>
@@ -216,6 +214,7 @@ export const ProformasTable = () => {
             <div>
             <p><strong>Cliente:</strong> ${data.cliente}</p>
             <p><strong>Marca de Motor:</strong> ${data.marcaMotor}</p>
+            <p><strong>Numero de Motor:</strong> ${data.numeroMotor}</p>
             </div>
             <div>
             <p><strong>Fecha:</strong> ${data.fechaEmision}</p>

@@ -52,7 +52,7 @@ const EditOrden = ({ id, setEdit }) => {
       numeroMotor: "",
       revisionBiela: "",
       bancada: "",
-      pulirCiguenal: false,
+      pulirCigueñal: false,
       pistaTrasera: false,
       pistaDelantera: false,
       cambioPiniones: false,
@@ -238,7 +238,7 @@ const EditOrden = ({ id, setEdit }) => {
               </Grid>
               {[
                 "rectificarCigueñal",
-                "pulirCiguenal",
+                "pulirCigueñal ",
                 "pistaTrasera",
                 "pistaDelantera",
                 "cambioPiniones",

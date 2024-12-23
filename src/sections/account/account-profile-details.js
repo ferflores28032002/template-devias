@@ -84,7 +84,7 @@ export const AccountProfileDetails = () => {
       lavadoArmadoInstaladoSellos: false,
       hacerPruebaPresionCulata: false,
       notasCulatas: "",
-      pulirCiguenal: false,
+      pulirCigueñal: false,
       cantidadPasesAgua: 0,
       cambiarBujies: false,
       reconstruirHaushingBiela: false,
@@ -203,7 +203,7 @@ export const AccountProfileDetails = () => {
               </Grid>
               {[
                 "rectificarCigueñal",
-                "pulirCiguenal",
+                "pulirCigueñal ",
                 "pistaTrasera",
                 "pistaDelantera",
                 "cambioPiniones",

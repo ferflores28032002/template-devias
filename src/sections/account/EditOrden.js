@@ -238,7 +238,7 @@ const EditOrden = ({ id, setEdit }) => {
               </Grid>
               {[
                 "rectificarCigueñal",
-                "pulirCigueñal ",
+                "pulirCigueñal",
                 "pistaTrasera",
                 "pistaDelantera",
                 "cambioPiniones",

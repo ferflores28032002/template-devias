@@ -203,7 +203,7 @@ export const AccountProfileDetails = () => {
               </Grid>
               {[
                 "rectificarCigueñal",
-                "pulirCigueñal ",
+                "pulirCigueñal",
                 "pistaTrasera",
                 "pistaDelantera",
                 "cambioPiniones",

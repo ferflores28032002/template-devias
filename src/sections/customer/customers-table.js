@@ -31,7 +31,7 @@ export const ReparacionesTable = (props) => {
     page = 0,
     rowsPerPage = 0,
     isEditModalOpen,
-    setEditModalOpen
+    setEditModalOpen,
   } = props;
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -81,12 +81,6 @@ export const ReparacionesTable = (props) => {
     setSelectedRepair(reparacion);
     setEditModalOpen(true);
   };
-
-  const handleDetailsClick = (reparacion) => {
-    setSelectedRepair(reparacion);
-    setDetailsModalOpen(true);
-  };
-
   const handleUpdate = () => {
     setEditModalOpen(false);
   };
@@ -100,65 +94,64 @@ export const ReparacionesTable = (props) => {
           </Stack>
         ) : (
           <Stack
-          direction={{ xs: "column", sm: "row" }}
-          spacing={2}
-          alignItems="center"
-          sx={{
-            width: "100%",
-            "& > *": { width: { xs: "100%", sm: "auto" } },
-          }}
-        >
-          <TextField
-            placeholder="Buscar por Cliente o Marca"
-            variant="outlined"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            size="small"
-          />
-          <TextField
-            label="Fecha Inicio Desde"
-            type="date"
-            InputLabelProps={{ shrink: true }}
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-            size="small"
-          />
-          <TextField
-            label="Fecha Inicio Hasta"
-            type="date"
-            InputLabelProps={{ shrink: true }}
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-            size="small"
-          />
-          <Select
-            value={selectedState}
-            onChange={(e) => setSelectedState(e.target.value)}
-            displayEmpty
-            size="small"
-          >
-            <MenuItem value="">
-              <em>Todos los Estados</em>
-            </MenuItem>
-            {states.map((state) => (
-              <MenuItem key={state.id} value={state.nombre}>
-                {state.nombre}
-              </MenuItem>
-            ))}
-          </Select>
-          <Button
-            variant="contained"
-            onClick={() => {
-              setSearchTerm("");
-              setStartDate("");
-              setEndDate("");
-              setSelectedState("");
+            direction={{ xs: "column", sm: "row" }}
+            spacing={2}
+            alignItems="center"
+            sx={{
+              width: "100%",
+              "& > *": { width: { xs: "100%", sm: "auto" } },
             }}
           >
-            Limpiar Filtros
-          </Button>
-        </Stack>
-        
+            <TextField
+              placeholder="Buscar por Cliente o Marca"
+              variant="outlined"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              size="small"
+            />
+            <TextField
+              label="Fecha Inicio Desde"
+              type="date"
+              InputLabelProps={{ shrink: true }}
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              size="small"
+            />
+            <TextField
+              label="Fecha Inicio Hasta"
+              type="date"
+              InputLabelProps={{ shrink: true }}
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              size="small"
+            />
+            <Select
+              value={selectedState}
+              onChange={(e) => setSelectedState(e.target.value)}
+              displayEmpty
+              size="small"
+            >
+              <MenuItem value="">
+                <em>Todos los Estados</em>
+              </MenuItem>
+              {states.map((state) => (
+                <MenuItem key={state.id} value={state.nombre}>
+                  {state.nombre}
+                </MenuItem>
+              ))}
+            </Select>
+            <Button
+              variant="contained"
+              onClick={() => {
+                setSearchTerm("");
+                setStartDate("");
+                setEndDate("");
+                setSelectedState("");
+              }}
+            >
+              Limpiar Filtros
+            </Button>
+          </Stack>
         )}
       </Box>
       <Scrollbar>

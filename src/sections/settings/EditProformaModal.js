@@ -19,7 +19,9 @@ const EditProformaModal = ({ open, handleClose, id }) => {
   const [proformaData, setProformaData] = useState(null);
   const [prices, setPrices] = useState({});
   const [statuses, setStatuses] = useState([]);
-  const [selectedStatus, setSelectedStatus] = useState(1);
+  const [selectedStatus, setSelectedStatus] = useState(0);
+  const [repuestos, setRepuestos] = useState("");
+  const [adelanto, setAdelanto] = useState(0);
 
   useEffect(() => {
     if (open && id) {
@@ -40,6 +42,8 @@ const EditProformaModal = ({ open, handleClose, id }) => {
           return acc;
         }, {})
       );
+      setRepuestos(response.data.respuestos || "");
+      setAdelanto(response.data.adelanto || 0);
       setSelectedStatus(response.data.estadoId || 1);
     } catch (error) {
       console.error("Error fetching proforma data:", error);
@@ -48,18 +52,42 @@ const EditProformaModal = ({ open, handleClose, id }) => {
 
   const fetchStatuses = async () => {
     try {
-      const response = await axios.get(
-        "https://www.tallercenteno.somee.com/api/Proformas/estados"
-      );
+      const response = await axios.get("https://www.tallercenteno.somee.com/api/Proformas/estados");
       setStatuses(response.data);
     } catch (error) {
       console.error("Error fetching statuses:", error);
     }
   };
 
+  const calculateSubtotal = () => {
+    return Object.values(prices).reduce((total, price) => total + parseFloat(price || 0), 0);
+  };
+
+  const calculateIVA = (subtotal) => {
+    return subtotal * 0.15;
+  };
+
+  const calculateTotal = (subtotal, iva) => {
+    return subtotal + iva;
+  };
+
+  const calculateRemaining = (total, adelanto) => {
+    return total - adelanto;
+  };
+
   const handlePriceChange = (description, value) => {
     if (!isNaN(value) && Number(value) >= 0) {
       setPrices((prev) => ({ ...prev, [description]: value }));
+    }
+  };
+
+  const handleRepuestosChange = (e) => {
+    setRepuestos(e.target.value);
+  };
+
+  const handleAdelantoChange = (value) => {
+    if (!isNaN(value) && Number(value) >= 0) {
+      setAdelanto(parseFloat(value));
     }
   };
 
@@ -72,11 +100,12 @@ const EditProformaModal = ({ open, handleClose, id }) => {
 
     const payload = {
       estadoId: selectedStatus,
-      adelanto: proformaData.adelanto || 0,
+      adelanto: adelanto,
       items: Object.entries(prices).map(([descripcion, precio]) => ({
         descripcion,
         precio: parseFloat(precio) || 0,
       })),
+      respuestos: repuestos,
     };
 
     try {
@@ -92,6 +121,11 @@ const EditProformaModal = ({ open, handleClose, id }) => {
   };
 
   if (!proformaData) return null;
+
+  const subtotal = calculateSubtotal();
+  const iva = calculateIVA(subtotal);
+  const total = calculateTotal(subtotal, iva);
+  const remaining = calculateRemaining(total, adelanto);
 
   return (
     <Modal open={open} onClose={handleClose}>
@@ -153,9 +187,7 @@ const EditProformaModal = ({ open, handleClose, id }) => {
                         size="small"
                         type="number"
                         value={prices[item.descripcion]}
-                        onChange={(e) =>
-                          handlePriceChange(item.descripcion, e.target.value)
-                        }
+                        onChange={(e) => handlePriceChange(item.descripcion, e.target.value)}
                         inputProps={{ min: 0, step: 0.01 }}
                       />
                     </Box>
@@ -165,6 +197,31 @@ const EditProformaModal = ({ open, handleClose, id }) => {
             </TableBody>
           </Table>
         </TableContainer>
+        <Box mb={2}>
+          <Typography variant="subtitle1">Adelanto</Typography>
+          <TextField
+            variant="outlined"
+            size="small"
+            type="number"
+            fullWidth
+            value={adelanto}
+            onChange={(e) => handleAdelantoChange(e.target.value)}
+            inputProps={{ min: 0, step: 0.01 }}
+            placeholder="Ingrese el adelanto"
+          />
+        </Box>
+
+        <Box mb={2}>
+          <Typography variant="subtitle1">Repuestos</Typography>
+          <TextField
+            multiline
+            rows={4}
+            fullWidth
+            value={repuestos}
+            onChange={handleRepuestosChange}
+            placeholder="Ingrese los repuestos"
+          />
+        </Box>
         <Box mb={2}>
           <Typography variant="subtitle1">Estado</Typography>
           <TextField
@@ -180,6 +237,13 @@ const EditProformaModal = ({ open, handleClose, id }) => {
               </option>
             ))}
           </TextField>
+        </Box>
+
+        <Box mb={2}>
+          <Typography variant="subtitle1">Subtotal: C$ {subtotal.toFixed(2)}</Typography>
+          <Typography variant="subtitle1">IVA (15%): C$ {iva.toFixed(2)}</Typography>
+          <Typography variant="subtitle1">Total: C$ {total.toFixed(2)}</Typography>
+          <Typography variant="subtitle1">Restante: C$ {remaining.toFixed(2)}</Typography>
         </Box>
         <Box mt={2} display="flex" justifyContent="space-between">
           <Button variant="contained" color="secondary" onClick={handleClose}>

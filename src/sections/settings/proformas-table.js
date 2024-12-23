@@ -90,7 +90,7 @@ export const ProformasTable = () => {
     // Encabezado personalizado
     doc.setFontSize(16);
     doc.setTextColor(40);
-    doc.text("De Taller Centeno", 14, 20);
+    doc.text("Taller Centeno", 14, 20); // Cambiado a "Taller Centeno"
     doc.setFontSize(12);
     doc.setFont(undefined, "bold");
     doc.text("TODA CLASE DE TRABAJOS DE TORNO, FRESA Y SOLDADURA", 14, 28);
@@ -101,55 +101,56 @@ export const ProformasTable = () => {
       34
     );
     doc.text("Managua, Nicaragua.", 14, 40);
+    doc.text("No. RUC: 0012406510003K", 14, 46); // Agregar el RUC
 
     // Datos principales en columnas
     doc.setFont(undefined, "bold");
-    doc.text("Factura N°:", 14, 50);
-    doc.setTextColor(255, 0, 0);
-    doc.text(data.numeroProforma, 50, 50);
-    doc.setTextColor(40);
-    doc.text("Fecha:", 120, 50);
-    doc.text(data.fechaEmision, 140, 50);
+    doc.text(data.numeroProforma, 14, 56); // Solo deja el número de la proforma
+    doc.text("Fecha:", 120, 56);
+    doc.text(data.fechaEmision, 140, 56);
 
     doc.setFont(undefined, "normal");
-    doc.text("Cliente:", 14, 58);
-    doc.text(data.cliente, 50, 58);
-    doc.text("Estado:", 120, 58);
-    doc.text(data.estado, 140, 58);
+    doc.text("Cliente:", 14, 64);
+    doc.text(data.cliente, 50, 64);
+    doc.text("Marca de Motor:", 14, 70); // Agregar Marca de Motor
+    doc.text(data.marcaMotor, 50, 70);
+    doc.text("Estado:", 120, 64);
+    doc.text(data.estado, 140, 64);
 
     // Línea separadora
     doc.setDrawColor(200);
-    doc.line(14, 64, 200, 64);
+    doc.line(14, 76, 200, 76);
 
-    // Tabla de detalles
+    // Tabla de detalles (sin columnas de "Cantidad" y "Total")
     doc.autoTable({
-      startY: 70,
-      head: [["Descripción", "Cantidad", "Precio Unitario", "Total"]],
-      body: data.items.map((item) => [
-        item.descripcion,
-        item.cantidad,
-        item.precioUnitario,
-        item.total,
-      ]),
+      startY: 82,
+      head: [["Descripción", "Precio Unitario"]],
+      body: data.items.map((item) => [item.descripcion, item.precio || "-"]),
       styles: { halign: "center", fillColor: [240, 240, 240] },
       headStyles: { fillColor: [100, 100, 255], textColor: [255, 255, 255] },
     });
 
-    // Resumen de totales en columnas
+    // Resumen de totales al lado derecho
     const finalY = doc.lastAutoTable.finalY + 10;
     doc.setFont(undefined, "bold");
-    doc.text("Resumen:", 14, finalY);
+    doc.text("Resumen:", 120, finalY);
     doc.setFont(undefined, "normal");
-    doc.text("Subtotal:", 14, finalY + 6);
-    doc.text(data.subtotal, 50, finalY + 6);
-    doc.text("IVA:", 14, finalY + 12);
-    doc.text(data.iva, 50, finalY + 12);
-    doc.text("Total:", 14, finalY + 18);
-    doc.text(data.total, 50, finalY + 18);
-    doc.text("Adelanto:", 14, finalY + 24);
-    doc.text(data.adelanto, 50, finalY + 24);
-    doc.text("Saldo Pendiente:", 14, finalY + 30);
-    doc.text(data.saldoPendiente, 50, finalY + 30);
+    doc.text("Subtotal:", 120, finalY + 6);
+    doc.text(data.subtotal, 160, finalY + 6);
+    doc.text("IVA:", 120, finalY + 12);
+    doc.text(data.iva, 160, finalY + 12);
+    doc.text("Total:", 120, finalY + 18);
+    doc.text(data.total, 160, finalY + 18);
+    doc.text("Adelanto:", 120, finalY + 24);
+    doc.text(data.adelanto, 160, finalY + 24);
+    doc.text("Saldo Pendiente:", 120, finalY + 30);
+    doc.text(data.saldoPendiente, 160, finalY + 30);
+
+    // Repuestos
+    doc.setFont(undefined, "bold");
+    doc.text("Repuestos:", 14, finalY);
+    doc.setFont(undefined, "normal");
+    doc.text(data.respuestos, 14, finalY + 6);
 
     // Pie de página
     doc.setFontSize(10);
@@ -173,39 +174,76 @@ export const ProformasTable = () => {
             body { font-family: Arial, sans-serif; margin: 20px; }
             h1 { text-align: center; color: #4caf50; }
             .header { text-align: center; margin-bottom: 20px; }
+            .details {
+              display: flex;
+              justify-content: space-between;
+              margin-top: 20px;
+              border: 1px solid #ddd;
+              padding: 10px;
+              border-radius: 8px;
+            }
             table { width: 100%; border-collapse: collapse; margin: 20px 0; }
             th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
             th { background-color: #f2f2f2; }
-            .totals { margin-top: 20px; }
+            .totals-container {
+              display: flex;
+              flex-direction: row;
+              justify-content: space-between; /* Espaciado entre los elementos */
+              align-items: center; /* Centrado vertical */
+              margin-top: 20px;
+              border: 1px solid #ddd;
+              padding: 20px;
+              border-radius: 8px;
+              text-align: center;
+            }
+            .totals, .repuestos {
+              flex: 1; /* Para que ambos tengan el mismo espacio */
+              padding: 0 10px;
+            }
             .footer { margin-top: 30px; font-size: 12px; color: #555; text-align: center; }
           </style>
         </head>
         <body>
           <div class="header">
-            <h2>De Taller Centeno</h2>
+            <h2>Taller Centeno</h2>
             <p><strong>TODA CLASE DE TRABAJOS DE TORNO, FRESA Y SOLDADURA</strong></p>
             <p>Iglesia Santa Ana 1c. al Sur y ½ c. arriba. Teléfonos: 2255-7211 / 2265-8139</p>
             <p>Managua, Nicaragua.</p>
-            <h3>PROFORMA N° <span style="color: red;">${data.numeroProforma}</span></h3>
-            <p>Fecha: ${data.fechaEmision}</p>
+            <p><strong>No. RUC:</strong> 0012406510003K</p>
+            <h3 style="color: red;">${data.numeroProforma}</h3>
+          </div>
+          <div class="details">
+            <div>
+            <p><strong>Cliente:</strong> ${data.cliente}</p>
+            <p><strong>Marca de Motor:</strong> ${data.marcaMotor}</p>
+            </div>
+            <div>
+            <p><strong>Fecha:</strong> ${data.fechaEmision}</p>
+            </div>
           </div>
           <table>
             <thead>
-              <tr><th>Descripción</th><th>Precio</th></tr>
+              <tr><th>Descripción</th><th>Precio Unitario</th></tr>
             </thead>
             <tbody>
               ${data.items
-                .map((item) => `<tr><td>${item.descripcion}</td><td>${item.precio}</td></tr>`)
+                .map(
+                  (item) => `<tr><td>${item.descripcion}</td><td>${item.precio || "-"}</td></tr>`
+                )
                 .join("")}
             </tbody>
           </table>
+          <div class="totals-container">
+          <div class="repuestos">
+          <p><strong>Repuestos:</strong> ${data.respuestos}</p>
+          </div>
           <div class="totals">
-            <p><strong>Repuestos:</strong> ${data.respuestos}</p>
             <p><strong>Subtotal:</strong> ${data.subtotal}</p>
             <p><strong>IVA:</strong> ${data.iva}</p>
             <p><strong>Total:</strong> ${data.total}</p>
             <p><strong>Adelanto:</strong> ${data.adelanto}</p>
             <p><strong>Saldo Pendiente:</strong> ${data.saldoPendiente}</p>
+          </div>
           </div>
           <div class="footer">
             <p><strong>Favor elaborar cheque a nombre de:</strong> Juan José Centeno Rosales</p>

@@ -145,6 +145,7 @@ const EditRepairModal = ({ open, onClose, repairData, onUpdate }) => {
                 select
                 fullWidth
                 margin="normal"
+                defaultValue={repairData?.estadoId || ""}
                 error={!!errors.estadoId}
                 helperText={errors.estadoId?.message}
               >

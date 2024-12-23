@@ -24,6 +24,7 @@ const ProformaModal = ({ open, handleClose, data, id }) => {
   );
 
   const [advance, setAdvance] = useState(0);
+  const [repuestos, setRepuestos] = useState("");
 
   const calculateSubtotal = () => {
     return Object.values(prices).reduce((total, price) => total + parseFloat(price || 0), 0);
@@ -53,6 +54,10 @@ const ProformaModal = ({ open, handleClose, data, id }) => {
     }
   };
 
+  const handleRepuestosChange = (e) => {
+    setRepuestos(e.target.value);
+  };
+
   const handleSave = async () => {
     const payload = {
       ordenTrabajoId: id, // El ID de la orden como prop
@@ -62,7 +67,7 @@ const ProformaModal = ({ open, handleClose, data, id }) => {
         descripcion,
         precio: parseFloat(precio) || 0,
       })),
-      respuestos: "", // Respuestos vacíos como se especificó
+      respuestos: repuestos, // Guardar el valor de los repuestos
     };
 
     try {
@@ -200,6 +205,17 @@ const ProformaModal = ({ open, handleClose, data, id }) => {
             </TableBody>
           </Table>
         </TableContainer>
+        <Box mb={2}>
+          <Typography variant="subtitle1">Repuestos</Typography>
+          <TextField
+            multiline
+            rows={4}
+            fullWidth
+            value={repuestos}
+            onChange={handleRepuestosChange}
+            placeholder="Ingrese los repuestos"
+          />
+        </Box>
         <Box mt={2} display="flex" justifyContent="space-between">
           <Button variant="contained" color="secondary" onClick={handleClose}>
             Cancelar

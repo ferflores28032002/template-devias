@@ -33,7 +33,7 @@ const EditProformaModal = ({ open, handleClose, id }) => {
   const fetchProformaData = async (proformaId) => {
     try {
       const response = await axios.get(
-        `https://www.tallercenteno.somee.com/api/Proformas/${proformaId}`
+        `http://www.tallercentenos.somee.com/api/Proformas/${proformaId}`
       );
       setProformaData(response.data);
       setPrices(
@@ -52,7 +52,7 @@ const EditProformaModal = ({ open, handleClose, id }) => {
 
   const fetchStatuses = async () => {
     try {
-      const response = await axios.get("https://www.tallercenteno.somee.com/api/Proformas/estados");
+      const response = await axios.get("http://www.tallercentenos.somee.com/api/Proformas/estados");
       setStatuses(response.data);
     } catch (error) {
       console.error("Error fetching statuses:", error);
@@ -110,7 +110,7 @@ const EditProformaModal = ({ open, handleClose, id }) => {
 
     try {
       const response = await axios.put(
-        `https://www.tallercenteno.somee.com/api/Proformas/${id}`,
+        `http://www.tallercentenos.somee.com/api/Proformas/${id}`,
         payload
       );
       console.log("Proforma actualizada con éxito:", response.data);

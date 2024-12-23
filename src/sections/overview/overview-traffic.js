@@ -68,10 +68,10 @@ export const OverviewTraffic = ({ sx }) => {
     const fetchData = async () => {
       try {
         const estadosResponse = await axios.get(
-          "https://www.tallercenteno.somee.com/api/Reparaciones/Estados"
+          "http://www.tallercentenos.somee.com/api/Reparaciones/Estados"
         );
         const reparacionesResponse = await axios.get(
-          "https://www.tallercenteno.somee.com/api/Reparaciones"
+          "http://www.tallercentenos.somee.com/api/Reparaciones"
         );
 
         const estados = estadosResponse.data;

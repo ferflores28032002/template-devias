@@ -47,7 +47,9 @@ const EditRepairModal = ({ open, onClose, repairData, onUpdate }) => {
     // Fetch statuses from API
     const fetchStatuses = async () => {
       try {
-        const response = await fetch("https://www.tallercenteno.somee.com/api/Reparaciones/Estados");
+        const response = await fetch(
+          "http://www.tallercentenos.somee.com/api/Reparaciones/Estados"
+        );
         const data = await response.json();
         setStatuses(data);
       } catch (error) {
@@ -60,7 +62,7 @@ const EditRepairModal = ({ open, onClose, repairData, onUpdate }) => {
   const onSubmit = async (data) => {
     try {
       const response = await fetch(
-        `https://www.tallercenteno.somee.com/api/Reparaciones/${repairData.ordenDeTrabajoId}`,
+        `http://www.tallercentenos.somee.com/api/Reparaciones/${repairData.ordenDeTrabajoId}`,
         {
           method: "PUT",
           headers: {
@@ -73,7 +75,9 @@ const EditRepairModal = ({ open, onClose, repairData, onUpdate }) => {
         onUpdate();
         onClose();
       } else {
-        alert('La fecha de estimación de entrega no puede ser posterior a la fecha de retiro final.')
+        alert(
+          "La fecha de estimación de entrega no puede ser posterior a la fecha de retiro final."
+        );
       }
     } catch (error) {
       console.error("Error updating repair:", error);

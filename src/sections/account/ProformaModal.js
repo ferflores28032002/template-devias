@@ -72,7 +72,7 @@ const ProformaModal = ({ open, handleClose, data, id }) => {
 
     try {
       const response = await axios.post(
-        "https://www.tallercenteno.somee.com/api/Proformas/api/Proformas/Create",
+        "http://www.tallercentenos.somee.com/api/Proformas/api/Proformas/Create",
         payload
       );
       console.log("Proforma creada con éxito:", response.data);

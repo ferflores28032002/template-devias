@@ -49,7 +49,7 @@ export const ReparacionesTable = (props) => {
       setLoading(true);
       try {
         const response = await fetch(
-          "https://www.tallercenteno.somee.com/api/Reparaciones/Estados"
+          "https://www.tallercentenos.somee.com/api/Reparaciones/Estados"
         );
         const data = await response.json();
         setStates(data);

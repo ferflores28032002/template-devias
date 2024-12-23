@@ -7,9 +7,21 @@ import axios from "axios";
 import { ReparacionesTable } from "src/sections/customer/customers-table";
 
 const fetchReparaciones = async () => {
-  const response = await axios.get("https://www.tallercenteno.somee.com/api/Reparaciones");
-  return response.data;
+  try {
+    const response = await axios.get("http://www.tallercentenos.somee.com/api/Reparaciones");
+    // Validar que la respuesta es un array
+    if (Array.isArray(response.data)) {
+      return response.data;
+    }
+    // Si no es un array, devolver un array vacío
+    return [];
+  } catch (error) {
+    console.error("Error fetching reparaciones:", error);
+    // Si hay un error, devolver un array vacío
+    return [];
+  }
 };
+
 
 const useReparaciones = (page, rowsPerPage, data) => {
   return useMemo(() => {
@@ -65,7 +77,7 @@ const Page = () => {
         <Container maxWidth="xl">
           <Stack spacing={3}>
             <ReparacionesTable
-              count={data.length}
+              count={data.length || 0}
               items={reparaciones.map((reparacion) => ({
                 ...reparacion,
                 fechaEstimadaEntregaColor: reparacion.esFechaPasada ? "red" : "inherit",

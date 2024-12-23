@@ -52,7 +52,7 @@ const EditOrden = ({ id, setEdit }) => {
       numeroMotor: "",
       revisionBiela: "",
       bancada: "",
-
+      pulirCiguenal: false,
       pistaTrasera: false,
       pistaDelantera: false,
       cambioPiniones: false,
@@ -99,7 +99,7 @@ const EditOrden = ({ id, setEdit }) => {
       try {
         setLoading(true);
         const response = await axios.get(
-          `https://www.tallercenteno.somee.com/api/OrdenTrabajo/ObtenerDuplicado/${id}`
+          `http://www.tallercentenos.somee.com/api/OrdenTrabajo/ObtenerDuplicado/${id}`
         );
         setInitialData(response.data);
         reset(response.data);
@@ -117,7 +117,7 @@ const EditOrden = ({ id, setEdit }) => {
     setLoading(true);
     try {
       const response = await axios.put(
-        `https://www.tallercenteno.somee.com/api/OrdenTrabajo/${id}`,
+        `http://www.tallercentenos.somee.com/api/OrdenTrabajo/${id}`,
         data
       );
       console.log("Response:", response.data);
@@ -238,7 +238,7 @@ const EditOrden = ({ id, setEdit }) => {
               </Grid>
               {[
                 "rectificarCigueñal",
-
+                "pulirCiguenal",
                 "pistaTrasera",
                 "pistaDelantera",
                 "cambioPiniones",

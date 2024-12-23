@@ -22,7 +22,7 @@ export const OverviewTasksProgress = ({ sx }) => {
   useEffect(() => {
     const fetchReparaciones = async () => {
       try {
-        const response = await axios.get('https://www.tallercenteno.somee.com/api/Reparaciones');
+        const response = await axios.get('http://www.tallercentenos.somee.com/api/Reparaciones');
         setReparaciones(response.data);
       } catch (err) {
         setError('Error fetching reparaciones');

@@ -48,7 +48,7 @@ export const ProformasTable = () => {
   // Función para obtener las proformas
   const fetchProformas = async () => {
     try {
-      const response = await axios.get("https://www.tallercenteno.somee.com/api/Proformas");
+      const response = await axios.get("http://www.tallercentenos.somee.com/api/Proformas");
       setProformas(response.data);
       setFilteredProformas(response.data.reverse() || []);
     } catch (error) {
@@ -59,7 +59,7 @@ export const ProformasTable = () => {
   const fetchProformaDetails = async (id) => {
     try {
       const response = await axios.get(
-        `https://www.tallercenteno.somee.com/api/Proformas/Listo-imprimir-proforma/${id}`
+        `http://www.tallercentenos.somee.com/api/Proformas/Listo-imprimir-proforma/${id}`
       );
       return response.data;
     } catch (error) {

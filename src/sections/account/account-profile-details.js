@@ -84,6 +84,7 @@ export const AccountProfileDetails = () => {
       lavadoArmadoInstaladoSellos: false,
       hacerPruebaPresionCulata: false,
       notasCulatas: "",
+      pulirCiguenal: false,
       cantidadPasesAgua: 0,
       cambiarBujies: false,
       reconstruirHaushingBiela: false,
@@ -96,7 +97,10 @@ export const AccountProfileDetails = () => {
   const onSubmit = async (data) => {
     setLoading(true);
     try {
-      const response = await axios.post("https://tallercenteno.somee.com/api/OrdenTrabajo", data);
+      const response = await axios.post(
+        "http://www.tallercentenos.somee.com/api/OrdenTrabajo",
+        data
+      );
       console.log("Response:", response.data);
       setLoading(false);
       await MySwal.fire({
@@ -199,7 +203,7 @@ export const AccountProfileDetails = () => {
               </Grid>
               {[
                 "rectificarCigueñal",
-
+                "pulirCiguenal",
                 "pistaTrasera",
                 "pistaDelantera",
                 "cambioPiniones",

@@ -6,7 +6,7 @@ import {
   DialogContent,
   DialogTitle,
   TextField,
-  MenuItem
+  MenuItem,
 } from "@mui/material";
 import axios from "axios";
 
@@ -22,7 +22,7 @@ const CreateRepairModal = ({ ordenDeTrabajoId, open, onClose, onSave }) => {
     const fetchEstados = async () => {
       try {
         const response = await axios.get(
-          "https://www.tallercenteno.somee.com/api/Reparaciones/Estados"
+          "http://www.tallercentenos.somee.com/api/Reparaciones/Estados"
         );
         setEstados(response.data);
       } catch (error) {
@@ -40,13 +40,13 @@ const CreateRepairModal = ({ ordenDeTrabajoId, open, onClose, onSave }) => {
       fechaEstimadaEntrega,
       fechaRetiroFinal,
       estadoId: parseInt(estadoId, 10),
-      respuestos:''
+      respuestos: "",
     };
 
     setLoading(true);
     try {
       const response = await axios.post(
-        "https://www.tallercenteno.somee.com/api/Reparaciones",
+        "http://www.tallercentenos.somee.com/api/Reparaciones",
         repairData
       );
       onSave(response.data);

@@ -52,7 +52,6 @@ export const AccountProfileDetails = () => {
       numeroMotor: "",
       revisionBiela: "",
       bancada: "",
-      rellenarAxial: false,
       pistaTrasera: false,
       pistaDelantera: false,
       cambioPiniones: false,
@@ -200,7 +199,7 @@ export const AccountProfileDetails = () => {
               </Grid>
               {[
                 "rectificarCigueñal",
-                "rellenarAxial",
+
                 "pistaTrasera",
                 "pistaDelantera",
                 "cambioPiniones",

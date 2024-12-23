@@ -49,12 +49,8 @@ export const OverviewTasksProgress = ({ sx }) => {
             </Typography>
             {isLoading ? (
               <CircularProgress size={24} />
-            ) : error ? (
-              <Typography color="error.main" variant="body2">
-                {error}
-              </Typography>
             ) : (
-              <Typography variant="h4">{totalReparaciones}</Typography>
+              <Typography variant="h4">{totalReparaciones || 0}</Typography>
             )}
           </Stack>
           <Avatar

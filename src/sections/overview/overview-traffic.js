@@ -1,5 +1,6 @@
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 import {
+  Alert,
   Box,
   Card,
   CardContent,
@@ -7,57 +8,53 @@ import {
   Stack,
   SvgIcon,
   Typography,
-  useTheme
-} from '@mui/material';
-import { Chart } from 'src/components/chart';
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+  useTheme,
+} from "@mui/material";
+import { Chart } from "src/components/chart";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const useChartOptions = (labels) => {
   const theme = useTheme();
 
   return {
     chart: {
-      background: 'transparent'
+      background: "transparent",
     },
-    colors: [
-      theme.palette.primary.main,
-      theme.palette.success.main,
-      theme.palette.warning.main
-    ],
+    colors: [theme.palette.primary.main, theme.palette.success.main, theme.palette.warning.main],
     dataLabels: {
-      enabled: false
+      enabled: false,
     },
     labels,
     legend: {
-      show: false
+      show: false,
     },
     plotOptions: {
       pie: {
-        expandOnClick: false
-      }
+        expandOnClick: false,
+      },
     },
     states: {
       active: {
         filter: {
-          type: 'none'
-        }
+          type: "none",
+        },
       },
       hover: {
         filter: {
-          type: 'none'
-        }
-      }
+          type: "none",
+        },
+      },
     },
     stroke: {
-      width: 0
+      width: 0,
     },
     theme: {
-      mode: theme.palette.mode
+      mode: theme.palette.mode,
     },
     tooltip: {
-      fillSeriesColor: false
-    }
+      fillSeriesColor: false,
+    },
   };
 };
 
@@ -70,19 +67,25 @@ export const OverviewTraffic = ({ sx }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const estadosResponse = await axios.get('https://www.tallercenteno.somee.com/api/Reparaciones/Estados');
-        const reparacionesResponse = await axios.get('https://www.tallercenteno.somee.com/api/Reparaciones');
+        const estadosResponse = await axios.get(
+          "https://www.tallercenteno.somee.com/api/Reparaciones/Estados"
+        );
+        const reparacionesResponse = await axios.get(
+          "https://www.tallercenteno.somee.com/api/Reparaciones"
+        );
 
         const estados = estadosResponse.data;
         setLabels(estados.map((estado) => estado.nombre));
 
         const seriesData = estados.map((estado) => {
-          return reparacionesResponse.data.filter((reparacion) => reparacion.estado === estado.nombre).length;
+          return reparacionesResponse.data.filter(
+            (reparacion) => reparacion.estado === estado.nombre
+          ).length;
         });
 
         setChartSeries(seriesData);
       } catch (err) {
-        setError('Error fetching data');
+        setError("Error fetching data");
       } finally {
         setIsLoading(false);
       }
@@ -102,8 +105,10 @@ export const OverviewTraffic = ({ sx }) => {
             Cargando...
           </Typography>
         ) : error ? (
-          <Typography variant="body2" color="error.main">
-            {error}
+          <Typography variant="body2">
+            <Alert severity="error" sx={{ width: "100%" }}>
+              No hay reparaciones registradas para mostrar.
+            </Alert>
           </Typography>
         ) : (
           <>
@@ -123,30 +128,24 @@ export const OverviewTraffic = ({ sx }) => {
             >
               {chartSeries.map((item, index) => {
                 const label = labels[index];
-                const color = chartOptions.colors[index] || '#000';
+                const color = chartOptions.colors[index] || "#000";
 
                 return (
                   <Box
                     key={label}
                     sx={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      alignItems: 'center'
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
                     }}
                   >
                     <SvgIcon>
                       <circle cx="12" cy="12" r="10" fill={color} />
                     </SvgIcon>
-                    <Typography
-                      sx={{ my: 1 }}
-                      variant="h6"
-                    >
+                    <Typography sx={{ my: 1 }} variant="h6">
                       {label}
                     </Typography>
-                    <Typography
-                      color="text.secondary"
-                      variant="subtitle2"
-                    >
+                    <Typography color="text.secondary" variant="subtitle2">
                       {item}
                     </Typography>
                   </Box>
@@ -161,5 +160,5 @@ export const OverviewTraffic = ({ sx }) => {
 };
 
 OverviewTraffic.propTypes = {
-  sx: PropTypes.object
+  sx: PropTypes.object,
 };

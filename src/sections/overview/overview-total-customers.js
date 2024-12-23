@@ -1,10 +1,18 @@
-import PropTypes from 'prop-types';
-import ArrowDownIcon from '@heroicons/react/24/solid/ArrowDownIcon';
-import ArrowUpIcon from '@heroicons/react/24/solid/ArrowUpIcon';
-import DocumentIcon from '@heroicons/react/24/solid/DocumentIcon';
-import { Avatar, Card, CardContent, Stack, SvgIcon, Typography, CircularProgress } from '@mui/material';
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+import PropTypes from "prop-types";
+import ArrowDownIcon from "@heroicons/react/24/solid/ArrowDownIcon";
+import ArrowUpIcon from "@heroicons/react/24/solid/ArrowUpIcon";
+import DocumentIcon from "@heroicons/react/24/solid/DocumentIcon";
+import {
+  Avatar,
+  Card,
+  CardContent,
+  Stack,
+  SvgIcon,
+  Typography,
+  CircularProgress,
+} from "@mui/material";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 export const OverviewTotalCustomers = ({ sx }) => {
   const [proformas, setProformas] = useState([]);
@@ -14,10 +22,10 @@ export const OverviewTotalCustomers = ({ sx }) => {
   useEffect(() => {
     const fetchProformas = async () => {
       try {
-        const response = await axios.get('https://www.tallercenteno.somee.com/api/Proformas');
+        const response = await axios.get("https://www.tallercenteno.somee.com/api/Proformas");
         setProformas(response.data);
       } catch (err) {
-        setError('Error fetching proformas');
+        setError("Error fetching proformas");
       } finally {
         setIsLoading(false);
       }
@@ -27,7 +35,7 @@ export const OverviewTotalCustomers = ({ sx }) => {
   }, []);
 
   const totalProformas = proformas.length;
-  const issuedProformas = proformas.filter((proforma) => proforma.estado === 'Emitida').length;
+  const issuedProformas = proformas.filter((proforma) => proforma.estado === "Emitida").length;
   const difference = totalProformas > 0 ? ((issuedProformas / totalProformas) * 100).toFixed(2) : 0;
   const positive = difference >= 50;
 
@@ -41,17 +49,13 @@ export const OverviewTotalCustomers = ({ sx }) => {
             </Typography>
             {isLoading ? (
               <CircularProgress size={24} />
-            ) : error ? (
-              <Typography color="error.main" variant="body2">
-                {error}
-              </Typography>
             ) : (
-              <Typography variant="h4">{totalProformas}</Typography>
+              <Typography variant="h4">{totalProformas || 0}</Typography>
             )}
           </Stack>
           <Avatar
             sx={{
-              backgroundColor: 'primary.main',
+              backgroundColor: "primary.main",
               height: 56,
               width: 56,
             }}
@@ -64,10 +68,9 @@ export const OverviewTotalCustomers = ({ sx }) => {
         {!isLoading && !error && (
           <Stack alignItems="center" direction="row" spacing={2} sx={{ mt: 2 }}>
             <Stack alignItems="center" direction="row" spacing={0.5}>
-              <SvgIcon color={positive ? 'success' : 'error'} fontSize="small">
+              <SvgIcon color={positive ? "success" : "error"} fontSize="small">
                 {positive ? <ArrowUpIcon /> : <ArrowDownIcon />}
               </SvgIcon>
-             
             </Stack>
             <Typography color="text.secondary" variant="caption">
               Total de proformas emitidas

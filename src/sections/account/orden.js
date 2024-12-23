@@ -66,22 +66,21 @@ export const Orden = ({ searchQuery }) => {
         `https://www.tallercenteno.somee.com/api/OrdenTrabajo/${id}`
       );
       const data = response.data;
-
+  
       const doc = new jsPDF();
-
-      // Encabezado con estructura en columnas
+  
+      // Encabezado
       doc.setFontSize(10);
-      doc.setTextColor(0, 0, 0); // Color gris original
+      doc.setTextColor(0, 0, 0);
       doc.text("De Taller Centeno", 14, 15);
-      doc.setFontSize(9);
       doc.text("Iglesia Santa Ana 1c. al Sur y ½ c. arriba", 14, 20);
       doc.text("Teléfonos: 2255-7211 / 2265-8139", 14, 25);
       doc.text("Managua, Nicaragua.", 14, 30);
-
+  
       doc.setFontSize(12);
       doc.setFont("Helvetica", "bold");
       doc.text("ORDEN DE TRABAJO", 105, 40, { align: "center" });
-
+  
       doc.setFontSize(10);
       doc.setFont("Helvetica", "normal");
       doc.text(
@@ -92,13 +91,10 @@ export const Orden = ({ searchQuery }) => {
         15,
         { align: "right" }
       );
-
-      doc.setTextColor(0, 0, 0);
-
-      // Información del cliente en columnas
+  
+      // Información del cliente
       doc.autoTable({
         startY: 50,
-        head: [],
         body: [
           ["Cliente:", data.cliente],
           ["Marca de Motor:", data.marcaMotor],
@@ -108,84 +104,127 @@ export const Orden = ({ searchQuery }) => {
           0: { cellWidth: 50, fontStyle: "bold" },
           1: { cellWidth: 140 },
         },
-        styles: {
-          fontSize: 10,
-          halign: "left",
-        },
+        styles: { fontSize: 10 },
       });
-
+  
+      let currentY = doc.lastAutoTable.finalY + 10;
+  
       // Tabla de servicios realizados
       doc.autoTable({
-        startY: doc.lastAutoTable.finalY + 10,
+        startY: currentY,
         head: [["Servicios"]],
-        body: data.servicios.map((servicio) => [servicio]),
+        body: data.servicios.length > 0
+          ? data.servicios.map((servicio) => [servicio])
+          : [["No hay servicios registrados"]],
         styles: {
           fontSize: 9,
           fillColor: [240, 240, 240],
         },
         headStyles: {
-          fillColor: [40, 116, 166], // Azul personalizado
+          fillColor: [40, 116, 166],
           textColor: [255, 255, 255],
         },
       });
-
-      // Sección de repuestos y notas
-      const startY = doc.lastAutoTable.finalY + 10;
-      doc.text("Repuestos: " + data.respuesto, 14, startY);
-      doc.text("Notas:", 14, startY + 10);
-      doc.setFontSize(9);
-      doc.text(`- Biela: ${data.notasBiela}`, 20, startY + 15);
-      doc.text(`- Block: ${data.notasBlock}`, 20, startY + 20);
-      doc.text(`- Cigüeñal: ${data.notasCigueñal}`, 20, startY + 25);
-      doc.text(`- Culatas: ${data.notasCulatas}`, 20, startY + 30);
-
+  
+      currentY = doc.lastAutoTable.finalY + 10;
+  
+      // Tabla de repuestos
+      doc.autoTable({
+        startY: currentY,
+        head: [["Repuestos"]],
+        body: data.respuesto
+          ? [[data.respuesto]]
+          : [["No hay repuestos registrados"]],
+        styles: {
+          fontSize: 9,
+          fillColor: [255, 255, 255],
+        },
+        headStyles: {
+          fillColor: [40, 116, 166],
+          textColor: [255, 255, 255],
+        },
+      });
+  
+      currentY = doc.lastAutoTable.finalY + 10;
+  
+      // Tabla de notas
+      const notas = [
+        { title: "Biela", content: data.notasBiela || "No hay notas" },
+        { title: "Block", content: data.notasBlock || "No hay notas" },
+        { title: "Cigüeñal", content: data.notasCigueñal || "No hay notas" },
+        { title: "Culatas", content: data.notasCulatas || "No hay notas" },
+      ];
+  
+      doc.autoTable({
+        startY: currentY,
+        head: [["Notas", "Detalle"]],
+        body: notas.map((nota) => [nota.title, nota.content]),
+        styles: {
+          fontSize: 9,
+          fillColor: [255, 255, 255],
+        },
+        headStyles: {
+          fillColor: [40, 116, 166],
+          textColor: [255, 255, 255],
+        },
+      });
+  
+      currentY = doc.lastAutoTable.finalY + 10;
+  
       // Pie de página
-      const footerStartY = startY + 50;
-      if (footerStartY + 20 > doc.internal.pageSize.height) {
-        doc.addPage(); // Agregar nueva página si no hay espacio
+      if (currentY + 30 > doc.internal.pageSize.height) {
+        doc.addPage();
+        currentY = 10;
       }
-
+  
       doc.setFontSize(10);
       doc.setTextColor(255, 0, 0);
-      doc.text("SU TRABAJO SERÁ ENTREGADO", 14, footerStartY);
-      doc.text("SOLAMENTE CON LA PRESENTACIÓN", 14, footerStartY + 5);
-      doc.text("DE ESTE RECIBO", 14, footerStartY + 10);
-
-      doc.setTextColor(255, 0, 0);
+      doc.text("SU TRABAJO SERÁ ENTREGADO", 14, currentY);
+      doc.text("SOLAMENTE CON LA PRESENTACIÓN", 14, currentY + 5);
+      doc.text("DE ESTE RECIBO", 14, currentY + 10);
+  
       doc.text(
         "NO SOMOS RESPONSABLES DE CUALQUIER TRABAJO RECIBIDO MÁS DE 30 DÍAS",
         14,
-        footerStartY + 20
+        currentY + 20
       );
-
+  
       // Guardar PDF
       doc.save(`Orden_${id}.pdf`);
     } catch (error) {
       console.error("Error downloading PDF:", error);
     }
   };
+  
 
   const handlePrint = async (id) => {
     try {
-      const response = await axios.get(
-        `https://www.tallercenteno.somee.com/api/OrdenTrabajo/${id}`
-      );
-      const data = response.data;
+        const response = await axios.get(
+            `https://www.tallercenteno.somee.com/api/OrdenTrabajo/${id}`
+        );
+        const data = response.data;
 
-      const printWindow = window.open("", "_blank");
-      printWindow.document.write(`
+        const printWindow = window.open("", "_blank");
+        printWindow.document.write(`
       <html>
         <head>
           <title>Imprimir Orden</title>
           <style>
+            @media print {
+              body { margin: 0; padding: 0; }
+              .header { position: fixed; top: 0; left: 0; width: 100%; background-color: white; text-align: center; }
+              .content { margin-top: 150px; }
+              .footer { position: fixed; bottom: 0; left: 0; width: 100%; text-align: center; font-size: 12px; }
+            }
             body { font-family: Arial, sans-serif; margin: 20px; }
-            .header { text-align: center; margin-bottom: 20px; }
-            .header h2 { font-size: 18px; color: #333; margin: 0; }
+            .header h2 { font-size: 16px; color: #333; margin: 0; }
             .header p { margin: 0; font-size: 12px; }
-            .header .title { font-size: 22px; font-weight: bold; color: red; margin-top: 10px; }
-            table { width: 100%; border-collapse: collapse; margin: 20px 0; }
-            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-            th { background-color: #f2f2f2; }
+            .header .title { font-size: 18px; font-weight: bold; color: red; margin-top: 5px; }
+            .content h2 { font-size: 14px; margin: 10px 0; }
+            .content p { font-size: 12px; margin: 5px 0; }
+            .content ul { padding-left: 20px; }
+            .content ul li { margin-bottom: 5px; font-size: 12px; }
+            .no-data { color: gray; font-style: italic; font-size: 12px; }
           </style>
         </head>
         <body>
@@ -196,41 +235,57 @@ export const Orden = ({ searchQuery }) => {
             <p>Managua, Nicaragua.</p>
             <div class="title">ORDEN DE TRABAJO N° ${id}</div>
             <p>Fecha de Registro: ${
-              data.fechaRegistro
-                ? format(new Date(data.fechaRegistro), "dd/MM/yyyy")
-                : "No disponible"
+                data.fechaRegistro
+                    ? format(new Date(data.fechaRegistro), "dd/MM/yyyy")
+                    : "No disponible"
             }</p>
           </div>
-          <p><strong>Cliente:</strong> ${data.cliente}</p>
-          <p><strong>Marca de Motor:</strong> ${data.marcaMotor}</p>
-          <p><strong>Número de Motor:</strong> ${data.numeroMotor}</p>
 
-          <h2>Servicios Realizados</h2>
-          <ul>
-            ${data.servicios.map((servicio) => `<li>${servicio}</li>`).join("")}
-          </ul>
+          <div class="content">
+            <p><strong>Cliente:</strong> ${data.cliente}</p>
+            <p><strong>Marca de Motor:</strong> ${data.marcaMotor}</p>
+            <p><strong>Número de Motor:</strong> ${data.numeroMotor}</p>
 
-          <h2>Repuestos</h2>
-          <p>${data.respuesto}</p>
+            <h2>Servicios Realizados</h2>
+            <ul>
+              ${
+                data.servicios.length > 0
+                  ? data.servicios.map((servicio) => `<li>${servicio}</li>`).join("")
+                  : '<li class="no-data">No hay servicios registrados</li>'
+              }
+            </ul>
 
-          <h2>Notas</h2>
-          <p><strong>Biela:</strong> ${data.notasBiela}</p>
-          <p><strong>Block:</strong> ${data.notasBlock}</p>
-          <p><strong>Cigüeñal:</strong> ${data.notasCigueñal}</p>
-          <p><strong>Culatas:</strong> ${data.notasCulatas}</p>
+            <h2>Repuestos</h2>
+            <p>${data.respuesto || '<span class="no-data">No hay repuestos registrados</span>'}</p>
 
-          <h2 style="color: red;">SU TRABAJO SERÁ ENTREGADO</h2>
-          <p style="color: red;">SOLAMENTE CON LA PRESENTACIÓN DE ESTE RECIBO</p>
-          <p style="color: red;">NO SOMOS RESPONSABLES DE CUALQUIER TRABAJO RECIBIDO MÁS DE 30 DÍAS</p>
+            <h2>Notas</h2>
+            <p><strong>Biela:</strong> ${
+              data.notasBiela || '<span class="no-data">No hay notas</span>'
+            }</p>
+            <p><strong>Block:</strong> ${
+              data.notasBlock || '<span class="no-data">No hay notas</span>'
+            }</p>
+            <p><strong>Cigüeñal:</strong> ${
+              data.notasCigueñal || '<span class="no-data">No hay notas</span>'
+            }</p>
+            <p><strong>Culatas:</strong> ${
+              data.notasCulatas || '<span class="no-data">No hay notas</span>'
+            }</p>
+
+            <h2 style="color: red;">SU TRABAJO SERÁ ENTREGADO</h2>
+            <p style="color: red;">SOLAMENTE CON LA PRESENTACIÓN DE ESTE RECIBO</p>
+            <p style="color: red;">NO SOMOS RESPONSABLES DE CUALQUIER TRABAJO RECIBIDO MÁS DE 30 DÍAS</p>
+          </div>
         </body>
       </html>
     `);
-      printWindow.document.close();
-      printWindow.print();
+        printWindow.document.close();
+        printWindow.print();
     } catch (error) {
-      console.error("Error printing order:", error);
+        console.error("Error printing order:", error);
     }
-  };
+};
+
 
   const handleCreateProforma = async (id) => {
     try {

@@ -118,7 +118,7 @@ export const OverviewSales = ({ sx }) => {
   useEffect(() => {
     const fetchReparaciones = async () => {
       try {
-        const response = await axios.get("http://www.tallercentenos.somee.com/api/Reparaciones");
+        const response = await axios.get("https://www.tallercentenos.somee.com/api/Reparaciones");
         setReparaciones(response.data);
         const monthlyData = Array(12).fill(0);
         response.data.forEach((reparacion) => {

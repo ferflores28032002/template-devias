@@ -48,7 +48,7 @@ const EditRepairModal = ({ open, onClose, repairData, onUpdate }) => {
     const fetchStatuses = async () => {
       try {
         const response = await fetch(
-          "http://www.tallercentenos.somee.com/api/Reparaciones/Estados"
+          "https://www.tallercentenos.somee.com/api/Reparaciones/Estados"
         );
         const data = await response.json();
         setStatuses(data);
@@ -62,7 +62,7 @@ const EditRepairModal = ({ open, onClose, repairData, onUpdate }) => {
   const onSubmit = async (data) => {
     try {
       const response = await fetch(
-        `http://www.tallercentenos.somee.com/api/Reparaciones/${repairData.ordenDeTrabajoId}`,
+        `https://www.tallercentenos.somee.com/api/Reparaciones/${repairData.ordenDeTrabajoId}`,
         {
           method: "PUT",
           headers: {

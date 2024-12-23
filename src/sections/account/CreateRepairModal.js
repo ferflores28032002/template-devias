@@ -22,7 +22,7 @@ const CreateRepairModal = ({ ordenDeTrabajoId, open, onClose, onSave }) => {
     const fetchEstados = async () => {
       try {
         const response = await axios.get(
-          "http://www.tallercentenos.somee.com/api/Reparaciones/Estados"
+          "https://www.tallercentenos.somee.com/api/Reparaciones/Estados"
         );
         setEstados(response.data);
       } catch (error) {
@@ -46,7 +46,7 @@ const CreateRepairModal = ({ ordenDeTrabajoId, open, onClose, onSave }) => {
     setLoading(true);
     try {
       const response = await axios.post(
-        "http://www.tallercentenos.somee.com/api/Reparaciones",
+        "https://www.tallercentenos.somee.com/api/Reparaciones",
         repairData
       );
       onSave(response.data);

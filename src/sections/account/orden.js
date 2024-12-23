@@ -40,7 +40,7 @@ export const Orden = ({ searchQuery }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://www.tallercentenos.somee.com/api/OrdenTrabajo");
+        const response = await axios.get("https://www.tallercentenos.somee.com/api/OrdenTrabajo");
         setOrdenes(response.data.reverse() || []);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -63,7 +63,7 @@ export const Orden = ({ searchQuery }) => {
   const handleDownloadPDF = async (id) => {
     try {
       const response = await axios.get(
-        `http://www.tallercentenos.somee.com/api/OrdenTrabajo/${id}`
+        `https://www.tallercentenos.somee.com/api/OrdenTrabajo/${id}`
       );
       const data = response.data;
 
@@ -198,7 +198,7 @@ export const Orden = ({ searchQuery }) => {
   const handlePrint = async (id) => {
     try {
       const response = await axios.get(
-        `http://www.tallercentenos.somee.com/api/OrdenTrabajo/${id}`
+        `https://www.tallercentenos.somee.com/api/OrdenTrabajo/${id}`
       );
       const data = response.data;
 
@@ -288,7 +288,7 @@ export const Orden = ({ searchQuery }) => {
     try {
       setButtonLoading(id);
       const response = await axios.get(
-        `http://www.tallercentenos.somee.com/api/OrdenTrabajo/${id}`
+        `https://www.tallercentenos.somee.com/api/OrdenTrabajo/${id}`
       );
       setSelectedData(response.data);
       setOpen(true);

@@ -1,7 +1,7 @@
-import PropTypes from 'prop-types';
-import ArrowDownIcon from '@heroicons/react/24/solid/ArrowDownIcon';
-import ArrowUpIcon from '@heroicons/react/24/solid/ArrowUpIcon';
-import DocumentIcon from '@heroicons/react/24/solid/DocumentIcon';
+import PropTypes from "prop-types";
+import ArrowDownIcon from "@heroicons/react/24/solid/ArrowDownIcon";
+import ArrowUpIcon from "@heroicons/react/24/solid/ArrowUpIcon";
+import DocumentIcon from "@heroicons/react/24/solid/DocumentIcon";
 import {
   Avatar,
   Card,
@@ -9,10 +9,10 @@ import {
   Stack,
   SvgIcon,
   Typography,
-  CircularProgress
-} from '@mui/material';
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+  CircularProgress,
+} from "@mui/material";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 export const OverviewTasksProgress = ({ sx }) => {
   const [reparaciones, setReparaciones] = useState([]);
@@ -22,10 +22,10 @@ export const OverviewTasksProgress = ({ sx }) => {
   useEffect(() => {
     const fetchReparaciones = async () => {
       try {
-        const response = await axios.get('http://www.tallercentenos.somee.com/api/Reparaciones');
+        const response = await axios.get("https://www.tallercentenos.somee.com/api/Reparaciones");
         setReparaciones(response.data);
       } catch (err) {
-        setError('Error fetching reparaciones');
+        setError("Error fetching reparaciones");
       } finally {
         setIsLoading(false);
       }
@@ -35,8 +35,11 @@ export const OverviewTasksProgress = ({ sx }) => {
   }, []);
 
   const totalReparaciones = reparaciones.length;
-  const finalizadas = reparaciones.filter((reparacion) => reparacion.estado === 'Finalizado').length;
-  const difference = totalReparaciones > 0 ? ((finalizadas / totalReparaciones) * 100).toFixed(2) : 0;
+  const finalizadas = reparaciones.filter(
+    (reparacion) => reparacion.estado === "Finalizado"
+  ).length;
+  const difference =
+    totalReparaciones > 0 ? ((finalizadas / totalReparaciones) * 100).toFixed(2) : 0;
   const positive = difference >= 50;
 
   return (
@@ -55,7 +58,7 @@ export const OverviewTasksProgress = ({ sx }) => {
           </Stack>
           <Avatar
             sx={{
-              backgroundColor: 'primary.main',
+              backgroundColor: "primary.main",
               height: 56,
               width: 56,
             }}
@@ -68,7 +71,7 @@ export const OverviewTasksProgress = ({ sx }) => {
         {!isLoading && !error && (
           <Stack alignItems="center" direction="row" spacing={2} sx={{ mt: 2 }}>
             <Stack alignItems="center" direction="row" spacing={0.5}>
-              <SvgIcon color={positive ? 'success' : 'error'} fontSize="small">
+              <SvgIcon color={positive ? "success" : "error"} fontSize="small">
                 {positive ? <ArrowUpIcon /> : <ArrowDownIcon />}
               </SvgIcon>
             </Stack>

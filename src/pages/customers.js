@@ -8,7 +8,7 @@ import { ReparacionesTable } from "src/sections/customer/customers-table";
 
 const fetchReparaciones = async () => {
   try {
-    const response = await axios.get("http://www.tallercentenos.somee.com/api/Reparaciones");
+    const response = await axios.get("https://www.tallercentenos.somee.com/api/Reparaciones");
     // Validar que la respuesta es un array
     if (Array.isArray(response.data)) {
       return response.data;
@@ -21,7 +21,6 @@ const fetchReparaciones = async () => {
     return [];
   }
 };
-
 
 const useReparaciones = (page, rowsPerPage, data) => {
   return useMemo(() => {

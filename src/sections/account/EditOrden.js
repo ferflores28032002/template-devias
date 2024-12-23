@@ -99,7 +99,7 @@ const EditOrden = ({ id, setEdit }) => {
       try {
         setLoading(true);
         const response = await axios.get(
-          `http://www.tallercentenos.somee.com/api/OrdenTrabajo/ObtenerDuplicado/${id}`
+          `https://www.tallercentenos.somee.com/api/OrdenTrabajo/ObtenerDuplicado/${id}`
         );
         setInitialData(response.data);
         reset(response.data);
@@ -117,7 +117,7 @@ const EditOrden = ({ id, setEdit }) => {
     setLoading(true);
     try {
       const response = await axios.put(
-        `http://www.tallercentenos.somee.com/api/OrdenTrabajo/${id}`,
+        `https://www.tallercentenos.somee.com/api/OrdenTrabajo/${id}`,
         data
       );
       console.log("Response:", response.data);

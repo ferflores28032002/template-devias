@@ -98,7 +98,7 @@ export const AccountProfileDetails = () => {
     setLoading(true);
     try {
       const response = await axios.post(
-        "http://www.tallercentenos.somee.com/api/OrdenTrabajo",
+        "https://www.tallercentenos.somee.com/api/OrdenTrabajo",
         data
       );
       console.log("Response:", response.data);

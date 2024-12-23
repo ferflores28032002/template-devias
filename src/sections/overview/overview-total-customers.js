@@ -22,7 +22,7 @@ export const OverviewTotalCustomers = ({ sx }) => {
   useEffect(() => {
     const fetchProformas = async () => {
       try {
-        const response = await axios.get("http://www.tallercentenos.somee.com/api/Proformas");
+        const response = await axios.get("https://www.tallercentenos.somee.com/api/Proformas");
         setProformas(response.data);
       } catch (err) {
         setError("Error fetching proformas");

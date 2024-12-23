@@ -22,7 +22,7 @@ export const OverviewBudget = ({ sx }) => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await axios.get("http://www.tallercentenos.somee.com/api/OrdenTrabajo");
+        const response = await axios.get("https://www.tallercentenos.somee.com/api/OrdenTrabajo");
         setOrders(response.data);
       } catch (err) {
         setError("Error fetching data");

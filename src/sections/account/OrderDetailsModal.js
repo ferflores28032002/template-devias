@@ -23,7 +23,7 @@ const OrderDetailsModal = ({ orderId, open, onClose }) => {
       setLoading(true);
       try {
         const response = await axios.get(
-          `http://www.tallercentenos.somee.com/api/OrdenTrabajo/${orderId}`
+          `https://www.tallercentenos.somee.com/api/OrdenTrabajo/${orderId}`
         );
         setOrderData(response.data);
       } catch (error) {
